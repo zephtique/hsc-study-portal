@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lecture Binder — HSC 2nd Paper</title>
+
+<!-- Favicon & Bookmark Icons -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231F6F78'/><path d='M28 20h48a6 6 0 0 1 6 6v48a6 6 0 0 1-6 6H28a6 6 0 0 1-6-6V26a6 6 0 0 1 6-6z' fill='%23FBFAF6'/><path d='M36 20v60' stroke='%23154F56' stroke-width='4' stroke-dasharray='4 4'/><circle cx='30' cy='32' r='3' fill='%231F6F78'/><circle cx='30' cy='50' r='3' fill='%231F6F78'/><circle cx='30' cy='68' r='3' fill='%231F6F78'/><path d='M44 36h26M44 48h20M44 60h26' stroke='%23736F5F' stroke-width='4' stroke-linecap='round'/></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231F6F78'/><path d='M28 20h48a6 6 0 0 1 6 6v48a6 6 0 0 1-6 6H28a6 6 0 0 1-6-6V26a6 6 0 0 1 6-6z' fill='%23FBFAF6'/><path d='M36 20v60' stroke='%23154F56' stroke-width='4' stroke-dasharray='4 4'/><circle cx='30' cy='32' r='3' fill='%231F6F78'/><circle cx='30' cy='50' r='3' fill='%231F6F78'/><circle cx='30' cy='68' r='3' fill='%231F6F78'/><path d='M44 36h26M44 48h20M44 60h26' stroke='%23736F5F' stroke-width='4' stroke-linecap='round'/></svg>">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -57,6 +62,9 @@
   .header-top{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
   .eyebrow{ font-size: .8rem; color: var(--muted); margin: 0; }
   .credit-top{ font-size: .74rem; color: var(--muted); opacity: 0.7; }
+  
+  .title-group{ display: flex; align-items: center; gap: 12px; }
+  .site-logo{ width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; }
   h1.site-title{ margin: 0; font-size: clamp(2rem, 5vw, 2.6rem); font-weight: 700; letter-spacing: -.01em; }
 
   nav.subjects{ display: flex; gap: 10px; margin-top: 20px; }
@@ -166,7 +174,18 @@
         <p class="eyebrow mono">HSC · 2ND PAPER</p>
         <span class="credit-top mono">Made by Zephyrizz</span>
       </div>
-      <h1 class="site-title">Lecture Binder</h1>
+      <div class="title-group">
+        <svg class="site-logo" viewBox="0 0 100 100">
+          <rect width="100" height="100" rx="20" fill="var(--accent)"/>
+          <path d="M28 20h48a6 6 0 0 1 6 6v48a6 6 0 0 1-6 6H28a6 6 0 0 1-6-6V26a6 6 0 0 1 6-6z" fill="#FBFAF6"/>
+          <path d="M36 20v60" stroke="var(--accent-dark)" stroke-width="4" stroke-dasharray="4 4"/>
+          <circle cx="30" cy="32" r="3" fill="var(--accent)"/>
+          <circle cx="30" cy="50" r="3" fill="var(--accent)"/>
+          <circle cx="30" cy="68" r="3" fill="var(--accent)"/>
+          <path d="M44 36h26M44 48h20M44 60h26" stroke="#736F5F" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <h1 class="site-title">Lecture Binder</h1>
+      </div>
     </div>
   </header>
 
@@ -282,10 +301,16 @@
   }
 
   function getPreviewUrl(rawUrl) {
-    if (rawUrl.includes('/view')) {
-      return rawUrl.replace(/\/view.*$/, '/preview');
+    let cleanUrl = rawUrl;
+    const match = rawUrl.match(/https?:\/\/[^\s\)\>\]]+/);
+    if (match) {
+      cleanUrl = match[0];
     }
-    return rawUrl;
+
+    if (cleanUrl.includes('/view')) {
+      return cleanUrl.replace(/\/view.*$/, '/preview');
+    }
+    return cleanUrl;
   }
 
   function updateTabCounts() {
