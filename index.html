@@ -1,245 +1,378 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSC 2nd Paper Learning Portal</title>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --bg-dark: #0f172a;
-            --card-bg: #1e293b;
-            --accent: #38bdf8;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecture Binder — HSC 2nd Paper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F1EEE4;
+    --surface: #FBFAF6;
+    --line: #DBD5C3;
+    --ink: #1E2420;
+    --muted: #736F5F;
+    --physics: #1F6F78;
+    --physics-dark: #154F56;
+    --physics-tint: #E4EFEE;
+    --math: #B4791F;
+    --math-dark: #8A5B14;
+    --math-tint: #F5EBD8;
+    --accent: var(--physics);
+    --accent-dark: var(--physics-dark);
+    --accent-tint: var(--physics-tint);
+  }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-light); display: flex; height: 100vh; overflow: hidden; }
+  *{ box-sizing: border-box; }
+  html{ -webkit-text-size-adjust: 100%; }
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", "Noto Sans Bengali", sans-serif;
+    line-height: 1.5;
+    transition: background .4s ease;
+  }
+  .bn{ font-family: "Noto Serif Bengali", "IBM Plex Sans", serif; }
+  .mono{ font-family: "IBM Plex Mono", monospace; letter-spacing: .02em; }
 
-        /* Sidebar Navigation */
-        .sidebar { width: 320px; background-color: #0b1120; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
-        .brand { padding: 20px; font-size: 1.1rem; font-weight: 700; color: var(--accent); border-bottom: 1px solid var(--border); }
-        .subject-tabs { display: flex; background-color: var(--card-bg); }
-        .tab-btn { flex: 1; padding: 14px; background: none; border: none; color: var(--text-muted); font-weight: 600; cursor: pointer; }
-        .tab-btn.active { color: var(--accent); border-bottom: 3px solid var(--accent); background-color: rgba(56, 189, 248, 0.05); }
-        .chapter-list { flex: 1; overflow-y: auto; padding: 12px; }
-        .chapter-item { padding: 12px 16px; margin-bottom: 8px; background-color: var(--card-bg); border-radius: 8px; cursor: pointer; border: 1px solid transparent; font-size: 0.9rem; transition: all 0.2s; }
-        .chapter-item:hover { border-color: var(--accent); }
-        .chapter-item.active { background-color: var(--primary); color: #fff; font-weight: 600; }
+  a{ color: inherit; }
+  button{ font: inherit; color: inherit; }
 
-        /* Main Display Area */
-        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
-        .header { padding: 20px 32px; background-color: var(--card-bg); border-bottom: 1px solid var(--border); }
-        .header h1 { font-size: 1.4rem; color: var(--text-light); }
-        .header p { color: var(--text-muted); font-size: 0.85rem; }
+  :focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
 
-        .content-body { padding: 24px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
-        .sheet-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-        .sheet-card { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
-        .sheet-card.selected { border-color: var(--accent); background-color: #273549; }
-        
-        .btn-group { display: flex; gap: 8px; }
-        .view-btn { padding: 6px 12px; background-color: var(--primary); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; text-decoration: none; }
-        .drive-btn { padding: 6px 12px; background-color: transparent; border: 1px solid var(--border); color: var(--text-muted); border-radius: 4px; cursor: pointer; font-size: 0.85rem; text-decoration: none; }
-        .drive-btn:hover { border-color: var(--accent); color: var(--text-light); }
+  .wrap{ max-width: 880px; margin: 0 auto; padding: 0 20px 80px; }
 
-        /* PDF Embedded Viewer */
-        .pdf-viewer-container { width: 100%; flex: 1; min-height: 550px; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: none; }
-        iframe { width: 100%; height: 100%; border: none; }
-        
-        .empty-state { color: var(--text-muted); padding: 20px 0; }
-    </style>
+  header.site{
+    padding: 56px 0 40px;
+    background-image:
+      linear-gradient(var(--paper), var(--paper)),
+      repeating-linear-gradient(0deg, color-mix(in srgb, var(--accent) 10%, transparent) 0 1px, transparent 1px 28px),
+      repeating-linear-gradient(90deg, color-mix(in srgb, var(--accent) 10%, transparent) 0 1px, transparent 1px 28px);
+    transition: background .4s ease;
+  }
+  header.site .wrap{ padding-bottom: 0; }
+  .eyebrow{ font-size: .8rem; color: var(--muted); margin: 0 0 6px; }
+  h1.site-title{ margin: 0; font-size: clamp(2rem, 5vw, 2.6rem); font-weight: 700; letter-spacing: -.01em; }
+  p.site-sub{ margin: 10px 0 0; max-width: 46ch; color: var(--muted); font-size: 1.02rem; }
+
+  nav.subjects{ display: flex; gap: 10px; margin-top: 34px; }
+  .subject-tab{
+    flex: 1 1 0; cursor: pointer; background: var(--surface);
+    border: 1px solid var(--line); border-bottom: none;
+    border-radius: 12px 12px 0 0; padding: 16px 18px 14px;
+    text-align: left; position: relative; top: 1px;
+    transition: transform .15s ease, background .2s ease;
+  }
+  .subject-tab .name-bn{ display:block; font-size: 1.15rem; font-weight: 600; }
+  .subject-tab .name-en{ display:block; font-size: .78rem; color: var(--muted); margin-top: 2px; }
+  .subject-tab .count{ display:block; margin-top: 10px; font-size: .74rem; color: var(--muted); }
+  .subject-tab[data-subject="physics"] .count-dot{ background: var(--physics); }
+  .subject-tab[data-subject="math"] .count-dot{ background: var(--math); }
+  .count-dot{ display:inline-block; width:6px; height:6px; border-radius: 50%; margin-right: 6px; }
+  .subject-tab[aria-selected="true"]{
+    background: var(--surface); border-color: var(--accent);
+    box-shadow: 0 -2px 0 var(--accent) inset; transform: translateY(-2px);
+  }
+  .subject-tab[aria-selected="true"] .name-bn{ color: var(--accent-dark); }
+  .subject-tab:not([aria-selected="true"]):hover{ background: var(--paper); }
+
+  main.panel{ background: var(--surface); border: 1px solid var(--line); border-radius: 0 10px 10px 10px; padding: 8px; }
+
+  details.chapter{ border-bottom: 1px solid var(--line); }
+  details.chapter:last-child{ border-bottom: none; }
+
+  summary.chapter-head{
+    list-style: none; cursor: pointer; display: flex; align-items: center;
+    gap: 16px; padding: 16px 12px; border-radius: 8px;
+  }
+  summary.chapter-head::-webkit-details-marker{ display:none; }
+  summary.chapter-head:hover{ background: var(--paper); }
+
+  .chapter-code{
+    flex: 0 0 auto; font-size: .72rem; color: var(--accent-dark);
+    background: var(--accent-tint); padding: 4px 8px; border-radius: 6px;
+    min-width: 52px; text-align: center;
+  }
+  .chapter-titles{ flex: 1 1 auto; min-width: 0; }
+  .chapter-name-bn{ font-size: 1.05rem; font-weight: 600; display: block; }
+  .chapter-name-en{ font-size: .8rem; color: var(--muted); display: block; margin-top: 1px; }
+  .chapter-meta{ flex: 0 0 auto; font-size: .76rem; color: var(--muted); text-align: right; white-space: nowrap; }
+  .chapter-chevron{ flex: 0 0 auto; width: 20px; height: 20px; display: grid; place-items: center; transition: transform .2s ease; color: var(--muted); }
+  details[open] .chapter-chevron{ transform: rotate(90deg); }
+
+  .chapter-body{ padding: 0 12px 20px 80px; }
+
+  .sheet-list{ display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+  .sheet-empty{ font-size: .88rem; color: var(--muted); padding: 14px 0 4px; }
+  .sheet-row{
+    display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--paper);
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px;
+    text-decoration: none;
+  }
+  .sheet-info-group{ display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .sheet-icon{
+    flex: 0 0 auto; width: 30px; height: 30px; border-radius: 6px;
+    background: var(--accent-tint); color: var(--accent-dark);
+    display: grid; place-items: center; font-size: .68rem; font-weight: 600;
+  }
+  .sheet-info{ flex: 1 1 auto; min-width: 0; }
+  .sheet-name{ font-size: .88rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sheet-sub{ font-size: .74rem; color: var(--muted); }
+  .sheet-row:hover{ border-color: var(--accent); }
+  .sheet-row:hover .sheet-name{ color: var(--accent-dark); }
+
+  .sheet-actions{ display: flex; gap: 8px; flex: 0 0 auto; }
+  .btn-read{
+    background: var(--accent); color: #fff; border: none; padding: 6px 12px;
+    border-radius: 6px; font-size: .78rem; font-weight: 500; cursor: pointer;
+  }
+  .btn-read:hover{ background: var(--accent-dark); }
+  .btn-drive{
+    background: transparent; border: 1px solid var(--line); color: var(--muted);
+    padding: 6px 12px; border-radius: 6px; font-size: .78rem; text-decoration: none;
+  }
+  .btn-drive:hover{ border-color: var(--accent); color: var(--accent-dark); }
+
+  /* PDF Viewer Frame */
+  .pdf-viewer-container{
+    margin-top: 16px; width: 100%; height: 500px; background: var(--paper);
+    border: 1px solid var(--line); border-radius: 8px; overflow: hidden; display: none;
+  }
+  .pdf-viewer-container iframe{ width: 100%; height: 100%; border: none; }
+
+  footer.note{ margin-top: 28px; font-size: .78rem; color: var(--muted); max-width: 62ch; }
+
+  @media (max-width: 560px){
+    .chapter-body{ padding-left: 12px; }
+    .chapter-meta{ display: none; }
+    nav.subjects{ gap: 6px; }
+    .subject-tab{ padding: 12px 12px 10px; }
+    .sheet-row{ flex-direction: column; align-items: flex-start; }
+    .sheet-actions{ width: 100%; }
+    .btn-read, .btn-drive{ flex: 1; text-align: center; }
+  }
+</style>
 </head>
-<body>
+<body class="subject-physics">
 
-    <!-- Sidebar Component -->
-    <div class="sidebar">
-        <div class="brand">HSC 2nd Paper Portal</div>
-        <div class="subject-tabs">
-            <button class="tab-btn active" onclick="switchSubject('physics')">Physics</button>
-            <button class="tab-btn" onclick="switchSubject('math')">Higher Math</button>
-        </div>
-        <div class="chapter-list" id="chapterList"></div>
+<div id="app">
+  <header class="site">
+    <div class="wrap">
+      <p class="eyebrow mono">HSC · BANGLADESH · 2ND PAPER</p>
+      <h1 class="site-title">Lecture Binder</h1>
+      <p class="site-sub bn">পদার্থবিজ্ঞান ও উচ্চতর গণিত (২য় পত্র) — অধ্যায় অনুযায়ী সাজানো লেকচার শীট</p>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <nav class="subjects" role="tablist" aria-label="Subjects">
+      <button class="subject-tab" data-subject="physics" role="tab" aria-selected="true">
+        <span class="name-bn bn">পদার্থবিজ্ঞান</span>
+        <span class="name-en">Physics · 2nd Paper</span>
+        <span class="count"><span class="count-dot"></span><span data-role="count">10 chapters</span></span>
+      </button>
+      <button class="subject-tab" data-subject="math" role="tab" aria-selected="false">
+        <span class="name-bn bn">উচ্চতর গণিত</span>
+        <span class="name-en">Higher Math · 2nd Paper</span>
+        <span class="count"><span class="count-dot"></span><span data-role="count">10 chapters</span></span>
+      </button>
+    </nav>
+
+    <main class="panel" id="panel" role="tabpanel"></main>
+
+    <!-- Embedded PDF Viewer Display Area -->
+    <div class="pdf-viewer-container" id="viewerContainer">
+      <iframe id="pdfFrame" src=""></iframe>
     </div>
 
-    <!-- Main Section View -->
-    <div class="main-content">
-        <div class="header">
-            <h1 id="chapterTitle">Select a Chapter</h1>
-            <p id="subjectSubtitle">HSC Bangladesh Curriculum</p>
-        </div>
+    <footer class="note">
+      Sheets are rendered directly using your Google Drive links. Select any chapter to expand its lecture sheets and read them directly on any device.
+    </footer>
+  </div>
+</div>
 
-        <div class="content-body">
-            <div class="sheet-grid" id="sheetContainer"></div>
-            
-            <!-- Embedded PDF Reader -->
-            <div class="pdf-viewer-container" id="viewerContainer">
-                <iframe id="pdfFrame" src=""></iframe>
+<script>
+(function(){
+  "use strict";
+
+  const SYLLABUS = {
+    physics: {
+      label: "পদার্থবিজ্ঞান", labelEn: "Physics", prefix: "PH",
+      chapters: [
+        { bn: "তাপগতিবিদ্যা", en: "Thermodynamics", sheets: [] },
+        { 
+          bn: "স্থির তড়িৎ", en: "Electrostatics", 
+          sheets: [
+            { title: "Lecture Sheet 01", driveUrl: "https://drive.google.com/file/d/1JDuoHBS6b5y0oZuq6jps8RwYQ7B1R-da/view?usp=drive_link" },
+            { title: "Lecture Sheet 02", driveUrl: "https://drive.google.com/file/d/1bwyPK_hvElaHUdFy8nJNSaJd8aq9f888/view?usp=drive_link" }
+          ] 
+        },
+        { 
+          bn: "চল তড়িৎ", en: "Current Electricity", 
+          sheets: [
+            { title: "Lecture Sheet 01", driveUrl: "https://drive.google.com/file/d/1V-8cvWdRdJh9-5Kf1xWzjZT26k1RqgcA/view?usp=drive_link" }
+          ] 
+        },
+        { bn: "তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চুম্বকত্ব", en: "Magnetic Effect of Current & Magnetism", sheets: [] },
+        { bn: "তড়িৎ চুম্বকীয় আবেশ ও পরিবর্তী প্রবাহ", en: "Electromagnetic Induction & Alternating Current", sheets: [] },
+        { bn: "জ্যামিতিক আলোকবিজ্ঞান", en: "Geometrical Optics", sheets: [] },
+        { bn: "ভৌত আলোকবিজ্ঞান", en: "Physical Optics", sheets: [] },
+        { bn: "আধুনিক পদার্থবিজ্ঞানের সূচনা", en: "Introduction to Modern Physics", sheets: [] },
+        { bn: "পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান", en: "Atomic Model & Nuclear Physics", sheets: [] },
+        { bn: "সেমিকন্ডাক্টর ও ইলেকট্রনিক্স", en: "Semiconductor & Electronics", sheets: [] }
+      ]
+    },
+    math: {
+      label: "উচ্চতর গণিত", labelEn: "Higher Math", prefix: "HM",
+      chapters: [
+        { bn: "বাস্তব সংখ্যা ও অসমতা", en: "Real Numbers & Inequalities", sheets: [] },
+        { bn: "যোগাশ্রয়ী প্রোগ্রাম", en: "Linear Programming", sheets: [] },
+        { 
+          bn: "জটিল সংখ্যা", en: "Complex Numbers", 
+          sheets: [
+            { title: "Lecture Sheet 01", driveUrl: "https://drive.google.com/file/d/1ek7dyI8YmmmzbCKl03JhEQOUpPGN_HLX/view?usp=drive_link" },
+            { title: "Lecture Sheet 02", driveUrl: "https://drive.google.com/file/d/1BcPZehlleVXHRnc_FI41F4iqK6TcEmni/view?usp=drive_link" },
+            { title: "Lecture Sheet 03", driveUrl: "https://drive.google.com/file/d/1uc-5VSF-09v-_xRhvcGi7_4jbeSdAHXb/view?usp=drive_link" },
+            { title: "Lecture Sheet 04", driveUrl: "https://drive.google.com/file/d/1ATm65RnAlzMaVBRmTGickYEUJ0Kg2WUP/view?usp=drive_link" }
+          ] 
+        },
+        { 
+          bn: "বহুপদী ও বহুপদী সমীকরণ", en: "Polynomials & Polynomial Equations", 
+          sheets: [
+            { title: "Lecture Sheet 01", driveUrl: "https://drive.google.com/file/d/1itCazyOst6T0BH-oBQyEJ89LQtVEFigk/view?usp=drive_link" },
+            { title: "Lecture Sheet 02", driveUrl: "https://drive.google.com/file/d/1Jy1VcarefYz00eN05MijVKSBIh64cHTp/view?usp=drive_link" },
+            { title: "Lecture Sheet 03", driveUrl: "https://drive.google.com/file/d/162nuOiFh80Wj9UMcJrcSbfPddTvINFV-/view?usp=drive_link" },
+            { title: "Lecture Sheet 04", driveUrl: "https://drive.google.com/file/d/1jttHsuX84puwS7umVkfFAF2DKceJ5L7k/view?usp=drive_link" }
+          ] 
+        },
+        { 
+          bn: "দ্বিপদী বিস্তৃতি", en: "Binomial Expansion", 
+          sheets: [
+            { title: "Lecture Sheet 01", driveUrl: "https://drive.google.com/file/d/19LXGfJG4pbj0qw29YUd9cYJBzIiQgoMb/view?usp=drive_link" },
+            { title: "Lecture Sheet 02", driveUrl: "https://drive.google.com/file/d/11tWwmpsCVC0ztK7NO3Dg-0yV_MscWFyP/view?usp=drive_link" }
+          ] 
+        },
+        { bn: "কণিক", en: "Conics", sheets: [] },
+        { bn: "বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ", en: "Inverse Trig Functions & Trig Equations", sheets: [] },
+        { bn: "স্থিতিবিদ্যা", en: "Statics", sheets: [] },
+        { bn: "সমতলে বস্তুকণার গতি", en: "Motion of Particles in a Plane", sheets: [] },
+        { bn: "সম্ভাবনা", en: "Probability", sheets: [] }
+      ]
+    }
+  };
+
+  let activeSubject = "physics";
+
+  function getPreviewUrl(rawUrl) {
+    if (rawUrl.includes('/view')) {
+      return rawUrl.replace(/\/view.*$/, '/preview');
+    }
+    return rawUrl;
+  }
+
+  function updateTabCounts() {
+    document.querySelectorAll(".subject-tab").forEach(tab => {
+      const subj = tab.dataset.subject;
+      const totalCh = SYLLABUS[subj].chapters.length;
+      let sheetTotal = 0;
+      SYLLABUS[subj].chapters.forEach(c => { sheetTotal += c.sheets.length; });
+      const label = sheetTotal > 0
+        ? totalCh + " chapters · " + sheetTotal + " sheet" + (sheetTotal === 1 ? "" : "s")
+        : totalCh + " chapters";
+      tab.querySelector('[data-role="count"]').textContent = label;
+    });
+  }
+
+  function renderPanel() {
+    document.body.className = "subject-" + activeSubject;
+    document.documentElement.style.setProperty("--accent", "var(--" + activeSubject + ")");
+    document.documentElement.style.setProperty("--accent-dark", "var(--" + activeSubject + "-dark)");
+    document.documentElement.style.setProperty("--accent-tint", "var(--" + activeSubject + "-tint)");
+
+    const subj = SYLLABUS[activeSubject];
+    const panel = document.getElementById("panel");
+    panel.innerHTML = "";
+
+    subj.chapters.forEach((ch, idx) => {
+      const code = subj.prefix + "-" + String(idx + 1).padStart(2, "0");
+      const sheetCount = ch.sheets.length;
+
+      const details = document.createElement("details");
+      details.className = "chapter";
+
+      const summary = document.createElement("summary");
+      summary.className = "chapter-head";
+      summary.innerHTML = `
+        <span class="chapter-code mono">${code}</span>
+        <span class="chapter-titles">
+          <span class="chapter-name-bn bn">${ch.bn}</span>
+          <span class="chapter-name-en">${ch.en}</span>
+        </span>
+        <span class="chapter-meta mono">${sheetCount > 0 ? sheetCount + " sheet" + (sheetCount === 1 ? "" : "s") : "empty"}</span>
+        <span class="chapter-chevron">›</span>
+      `;
+      details.appendChild(summary);
+
+      const body = document.createElement("div");
+      body.className = "chapter-body";
+
+      const list = document.createElement("div");
+      list.className = "sheet-list";
+
+      if (sheetCount === 0) {
+        list.innerHTML = `<div class="sheet-empty bn">এখনও কোনো লেকচার শীট নেই।</div>`;
+      } else {
+        ch.sheets.forEach(s => {
+          const previewUrl = getPreviewUrl(s.driveUrl);
+          const row = document.createElement("div");
+          row.className = "sheet-row";
+          row.innerHTML = `
+            <div class="sheet-info-group">
+              <span class="sheet-icon">PDF</span>
+              <span class="sheet-info">
+                <span class="sheet-name">${s.title}</span>
+                <span class="sheet-sub">Google Drive Document</span>
+              </span>
             </div>
-        </div>
-    </div>
+            <div class="sheet-actions">
+              <button type="button" class="btn-read" onclick="window.readPdf('${previewUrl}')">Read PDF</button>
+              <a href="${s.driveUrl}" target="_blank" rel="noopener" class="btn-drive">Open Drive</a>
+            </div>
+          `;
+          list.appendChild(row);
+        });
+      }
 
-    <script>
-        // Data Structure populated with provided Google Drive Links
-        const syllabusData = {
-            physics: {
-                title: "Physics 2nd Paper",
-                chapters: [
-                    { name: "Chapter 1: Thermodynamics", sheets: [] },
-                    { 
-                        name: "Chapter 2: Static Electricity", 
-                        sheets: [
-                            { title: "Lecture Sheet 01", driveUrl: "https://drive.google.com/file/d/1JDuoHBS6b5y0oZuq6jps8RwYQ7B1R-da/view?usp=drive_link" },
-                            { title: "Lecture Sheet 02", driveUrl: "https://drive.google.com/file/d/1bwyPK_hvElaHUdFy8nJNSaJd8aq9f888/view?usp=drive_link" }
-                        ] 
-                    },
-                    { 
-                        name: "Chapter 3: Current Electricity", 
-                        sheets: [
-                            { title: "Lecture Sheet 01", driveUrl: "https://drive.google.com/file/d/1V-8cvWdRdJh9-5Kf1xWzjZT26k1RqgcA/view?usp=drive_link" }
-                        ] 
-                    },
-                    { name: "Chapter 4: Magnetism", sheets: [] },
-                    { name: "Chapter 5: Electromagnetic Induction", sheets: [] },
-                    { name: "Chapter 6: Geometrical Optics", sheets: [] },
-                    { name: "Chapter 7: Physical Optics", sheets: [] },
-                    { name: "Chapter 8: Modern Physics", sheets: [] },
-                    { name: "Chapter 9: Atomic Model & Nuclear Physics", sheets: [] },
-                    { name: "Chapter 10: Semiconductor & Electronics", sheets: [] }
-                ]
-            },
-            math: {
-                title: "Higher Mathematics 2nd Paper",
-                chapters: [
-                    { name: "Chapter 1: Real Numbers & Inequalities", sheets: [] },
-                    { name: "Chapter 2: Linear Programming", sheets: [] },
-                    { 
-                        name: "Chapter 3: Complex Numbers", 
-                        sheets: [
-                            { title: "Lecture Sheet 01", driveUrl: "https://drive.google.com/file/d/1ek7dyI8YmmmzbCKl03JhEQOUpPGN_HLX/view?usp=drive_link" },
-                            { title: "Lecture Sheet 02", driveUrl: "https://drive.google.com/file/d/1BcPZehlleVXHRnc_FI41F4iqK6TcEmni/view?usp=drive_link" },
-                            { title: "Lecture Sheet 03", driveUrl: "https://drive.google.com/file/d/1uc-5VSF-09v-_xRhvcGi7_4jbeSdAHXb/view?usp=drive_link" },
-                            { title: "Lecture Sheet 04", driveUrl: "https://drive.google.com/file/d/1ATm65RnAlzMaVBRmTGickYEUJ0Kg2WUP/view?usp=drive_link" }
-                        ] 
-                    },
-                    { 
-                        name: "Chapter 4: Polynomials", 
-                        sheets: [
-                            { title: "Lecture Sheet 01", driveUrl: "https://drive.google.com/file/d/1itCazyOst6T0BH-oBQyEJ89LQtVEFigk/view?usp=drive_link" },
-                            { title: "Lecture Sheet 02", driveUrl: "https://drive.google.com/file/d/1Jy1VcarefYz00eN05MijVKSBIh64cHTp/view?usp=drive_link" },
-                            { title: "Lecture Sheet 03", driveUrl: "https://drive.google.com/file/d/162nuOiFh80Wj9UMcJrcSbfPddTvINFV-/view?usp=drive_link" },
-                            { title: "Lecture Sheet 04", driveUrl: "https://drive.google.com/file/d/1jttHsuX84puwS7umVkfFAF2DKceJ5L7k/view?usp=drive_link" }
-                        ] 
-                    },
-                    { 
-                        name: "Chapter 5: Binomial Expansion", 
-                        sheets: [
-                            { title: "Lecture Sheet 01", driveUrl: "https://drive.google.com/file/d/19LXGfJG4pbj0qw29YUd9cYJBzIiQgoMb/view?usp=drive_link" },
-                            { title: "Lecture Sheet 02", driveUrl: "https://drive.google.com/file/d/11tWwmpsCVC0ztK7NO3Dg-0yV_MscWFyP/view?usp=drive_link" }
-                        ] 
-                    },
-                    { name: "Chapter 6: Conics", sheets: [] },
-                    { name: "Chapter 7: Inverse Trigonometric Functions", sheets: [] },
-                    { name: "Chapter 8: Statics", sheets: [] },
-                    { name: "Chapter 9: Motion of Particles", sheets: [] },
-                    { name: "Chapter 10: Probability", sheets: [] }
-                ]
-            }
-        };
+      body.appendChild(list);
+      details.appendChild(body);
+      panel.appendChild(details);
+    });
 
-        let currentSubject = 'physics';
-        let activeChapterIndex = 1; // Default to Chapter 2 (Static Electricity)
+    updateTabCounts();
+  }
 
-        // Helper function to format Google Drive link for embedded previewing
-        function getPreviewUrl(rawUrl) {
-            if (rawUrl.includes('/view')) {
-                return rawUrl.replace(/\/view.*$/, '/preview');
-            }
-            return rawUrl;
-        }
+  window.readPdf = function(previewUrl) {
+    const viewer = document.getElementById("viewerContainer");
+    const frame = document.getElementById("pdfFrame");
+    frame.src = previewUrl;
+    viewer.style.display = "block";
+    viewer.scrollIntoView({ behavior: "smooth" });
+  };
 
-        function switchSubject(subjectKey) {
-            currentSubject = subjectKey;
-            // Pick default chapter with contents, or fallback to first
-            if (subjectKey === 'physics') activeChapterIndex = 1;
-            else activeChapterIndex = 2;
+  document.querySelectorAll(".subject-tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      activeSubject = tab.dataset.subject;
+      document.querySelectorAll(".subject-tab").forEach(t => t.setAttribute("aria-selected", t === tab ? "true" : "false"));
+      document.getElementById("viewerContainer").style.display = "none";
+      renderPanel();
+    });
+  });
 
-            document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
-                btn.classList.toggle('active', (idx === 0 && subjectKey === 'physics') || (idx === 1 && subjectKey === 'math'));
-            });
-            renderChapters();
-            renderContent();
-        }
-
-        function renderChapters() {
-            const listContainer = document.getElementById('chapterList');
-            listContainer.innerHTML = '';
-            syllabusData[currentSubject].chapters.forEach((chapter, index) => {
-                const item = document.createElement('div');
-                item.className = `chapter-item ${index === activeChapterIndex ? 'active' : ''}`;
-                
-                // Add indicator dot if chapter has attached sheets
-                const count = chapter.sheets.length;
-                item.innerText = count > 0 ? `${chapter.name} (${count})` : chapter.name;
-                
-                item.onclick = () => {
-                    activeChapterIndex = index;
-                    renderChapters();
-                    renderContent();
-                };
-                listContainer.appendChild(item);
-            });
-        }
-
-        function renderContent() {
-            const chapterObj = syllabusData[currentSubject].chapters[activeChapterIndex];
-            document.getElementById('chapterTitle').innerText = chapterObj.name;
-            document.getElementById('subjectSubtitle').innerText = syllabusData[currentSubject].title;
-            
-            const container = document.getElementById('sheetContainer');
-            const viewer = document.getElementById('viewerContainer');
-            viewer.style.display = 'none'; // Hide viewer until requested
-            
-            container.innerHTML = '';
-
-            if (!chapterObj.sheets || chapterObj.sheets.length === 0) {
-                container.innerHTML = '<div class="empty-state">No lecture sheets attached to this chapter yet.</div>';
-                return;
-            }
-
-            chapterObj.sheets.forEach((sheet) => {
-                const previewUrl = getPreviewUrl(sheet.driveUrl);
-                const card = document.createElement('div');
-                card.className = 'sheet-card';
-                card.innerHTML = `
-                    <div><strong>${sheet.title}</strong></div>
-                    <div class="btn-group">
-                        <button class="view-btn" onclick="loadPDF('${previewUrl}', this)">Read PDF</button>
-                        <a href="${sheet.driveUrl}" target="_blank" class="drive-btn">Open Drive</a>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function loadPDF(url, btnElement) {
-            const viewer = document.getElementById('viewerContainer');
-            const frame = document.getElementById('pdfFrame');
-            
-            // Highlight active sheet card
-            document.querySelectorAll('.sheet-card').forEach(c => c.classList.remove('selected'));
-            btnElement.closest('.sheet-card').classList.add('selected');
-
-            frame.src = url;
-            viewer.style.display = 'block';
-            viewer.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Initial App Load
-        renderChapters();
-        renderContent();
-    </script>
+  renderPanel();
+})();
+</script>
 </body>
 </html>
