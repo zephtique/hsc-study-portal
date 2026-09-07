@@ -102,10 +102,11 @@
   .chapter-chevron{ flex: 0 0 auto; width: 20px; height: 20px; display: grid; place-items: center; transition: transform .2s ease; color: var(--muted); }
   details[open] .chapter-chevron{ transform: rotate(90deg); }
 
-  .chapter-body{ padding: 0 12px 20px 80px; }
+  /* Added 12px top padding to create space when expanded */
+  .chapter-body{ padding: 12px 12px 20px 80px; }
 
-  .sheet-list{ display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-  .sheet-empty{ font-size: .88rem; color: var(--muted); padding: 14px 0 4px; }
+  .sheet-list{ display: flex; flex-direction: column; gap: 8px; }
+  .sheet-empty{ font-size: .88rem; color: var(--muted); padding: 4px 0; }
   .sheet-row{
     display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--paper);
     border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px;
@@ -145,7 +146,7 @@
   footer.note{ margin-top: 28px; font-size: .78rem; color: var(--muted); max-width: 62ch; }
 
   @media (max-width: 560px){
-    .chapter-body{ padding-left: 12px; }
+    .chapter-body{ padding-left: 12px; padding-top: 12px; }
     .chapter-meta{ display: none; }
     nav.subjects{ gap: 6px; }
     .subject-tab{ padding: 12px 12px 10px; }
