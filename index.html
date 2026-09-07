@@ -104,7 +104,6 @@
   .chapter-chevron{ flex: 0 0 auto; width: 20px; height: 20px; display: grid; place-items: center; transition: transform .2s ease; color: var(--muted); }
   details[open] .chapter-chevron{ transform: rotate(90deg); }
 
-  /* Added 12px top padding to create space when expanded */
   .chapter-body{ padding: 12px 12px 20px 80px; }
 
   .sheet-list{ display: flex; flex-direction: column; gap: 8px; }
@@ -202,24 +201,15 @@
 (function(){
   "use strict";
 
-  const SYLLABUS = {
+  const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQLFwSjs3po1TpI0XSsjBeJtYf_g9j81XSAxz_L6gh6xsamgt3Zy6KXTqQvApFKHtL59mFxrlGOAsuC/pub?output=csv";
+
+  const BASE_SYLLABUS = {
     physics: {
       label: "পদার্থবিজ্ঞান", labelEn: "Physics", prefix: "PH",
       chapters: [
         { bn: "তাপগতিবিদ্যা", en: "Thermodynamics", sheets: [] },
-        { 
-          bn: "স্থির তড়িৎ", en: "Electrostatics", 
-          sheets: [
-            { title: "Lecture Sheet 01", driveUrl: "https://drive.google.com/file/d/1JDuoHBS6b5y0oZuq6jps8RwYQ7B1R-da/view?usp=drive_link" },
-            { title: "Lecture Sheet 02", driveUrl: "https://drive.google.com/file/d/1bwyPK_hvElaHUdFy8nJNSaJd8aq9f888/view?usp=drive_link" }
-          ] 
-        },
-        { 
-          bn: "চল তড়িৎ", en: "Current Electricity", 
-          sheets: [
-            { title: "Lecture Sheet 01", driveUrl: "https://drive.google.com/file/d/1V-8cvWdRdJh9-5Kf1xWzjZT26k1RqgcA/view?usp=drive_link" }
-          ] 
-        },
+        { bn: "স্থির তড়িৎ", en: "Electrostatics", sheets: [] },
+        { bn: "চল তড়িৎ", en: "Current Electricity", sheets: [] },
         { bn: "তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চুম্বকত্ব", en: "Magnetic Effect of Current & Magnetism", sheets: [] },
         { bn: "তড়িৎ চুম্বকীয় আবেশ ও পরিবর্তী প্রবাহ", en: "Electromagnetic Induction & Alternating Current", sheets: [] },
         { bn: "জ্যামিতিক আলোকবিজ্ঞান", en: "Geometrical Optics", sheets: [] },
@@ -234,31 +224,9 @@
       chapters: [
         { bn: "বাস্তব সংখ্যা ও অসমতা", en: "Real Numbers & Inequalities", sheets: [] },
         { bn: "যোগাশ্রয়ী প্রোগ্রাম", en: "Linear Programming", sheets: [] },
-        { 
-          bn: "জটিল সংখ্যা", en: "Complex Numbers", 
-          sheets: [
-            { title: "Lecture Sheet 01", driveUrl: "https://drive.google.com/file/d/1ek7dyI8YmmmzbCKl03JhEQOUpPGN_HLX/view?usp=drive_link" },
-            { title: "Lecture Sheet 02", driveUrl: "https://drive.google.com/file/d/1BcPZehlleVXHRnc_FI41F4iqK6TcEmni/view?usp=drive_link" },
-            { title: "Lecture Sheet 03", driveUrl: "https://drive.google.com/file/d/1uc-5VSF-09v-_xRhvcGi7_4jbeSdAHXb/view?usp=drive_link" },
-            { title: "Lecture Sheet 04", driveUrl: "https://drive.google.com/file/d/1ATm65RnAlzMaVBRmTGickYEUJ0Kg2WUP/view?usp=drive_link" }
-          ] 
-        },
-        { 
-          bn: "বহুপদী ও বহুপদী সমীকরণ", en: "Polynomials & Polynomial Equations", 
-          sheets: [
-            { title: "Lecture Sheet 01", driveUrl: "https://drive.google.com/file/d/1itCazyOst6T0BH-oBQyEJ89LQtVEFigk/view?usp=drive_link" },
-            { title: "Lecture Sheet 02", driveUrl: "https://drive.google.com/file/d/1Jy1VcarefYz00eN05MijVKSBIh64cHTp/view?usp=drive_link" },
-            { title: "Lecture Sheet 03", driveUrl: "https://drive.google.com/file/d/162nuOiFh80Wj9UMcJrcSbfPddTvINFV-/view?usp=drive_link" },
-            { title: "Lecture Sheet 04", driveUrl: "https://drive.google.com/file/d/1jttHsuX84puwS7umVkfFAF2DKceJ5L7k/view?usp=drive_link" }
-          ] 
-        },
-        { 
-          bn: "দ্বিপদী বিস্তৃতি", en: "Binomial Expansion", 
-          sheets: [
-            { title: "Lecture Sheet 01", driveUrl: "https://drive.google.com/file/d/19LXGfJG4pbj0qw29YUd9cYJBzIiQgoMb/view?usp=drive_link" },
-            { title: "Lecture Sheet 02", driveUrl: "https://drive.google.com/file/d/11tWwmpsCVC0ztK7NO3Dg-0yV_MscWFyP/view?usp=drive_link" }
-          ] 
-        },
+        { bn: "জটিল সংখ্যা", en: "Complex Numbers", sheets: [] },
+        { bn: "বহুপদী ও বহুপদী সমীকরণ", en: "Polynomials & Polynomial Equations", sheets: [] },
+        { bn: "দ্বিপদী বিস্তৃতি", en: "Binomial Expansion", sheets: [] },
         { bn: "কণিক", en: "Conics", sheets: [] },
         { bn: "বিপরীত ত্রিকোণমিতিক ফাংশন ও ত্রিকোণমিতিক সমীকরণ", en: "Inverse Trig Functions & Trig Equations", sheets: [] },
         { bn: "স্থিতিবিদ্যা", en: "Statics", sheets: [] },
@@ -268,7 +236,50 @@
     }
   };
 
+  let SYLLABUS = JSON.parse(JSON.stringify(BASE_SYLLABUS));
   let activeSubject = "physics";
+
+  function parseCSV(text) {
+    const lines = text.trim().split("\n");
+    if (lines.length < 2) return [];
+    const headers = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g, ''));
+    const results = [];
+    
+    for (let i = 1; i < lines.length; i++) {
+      if (!lines[i].trim()) continue;
+      const values = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.trim().replace(/^"|"$/g, ''));
+      const obj = {};
+      headers.forEach((h, idx) => obj[h] = values[idx] || "");
+      results.push(obj);
+    }
+    return results;
+  }
+
+  async function loadDataFromSheets() {
+    try {
+      const res = await fetch(SHEET_CSV_URL);
+      const csvText = await res.text();
+      const data = parseCSV(csvText);
+
+      SYLLABUS = JSON.parse(JSON.stringify(BASE_SYLLABUS));
+
+      data.forEach(row => {
+        const subj = row.Subject ? row.Subject.toLowerCase().trim() : "";
+        const chIdx = parseInt(row.ChapterIndex, 10) - 1;
+        
+        if (SYLLABUS[subj] && SYLLABUS[subj].chapters[chIdx]) {
+          SYLLABUS[subj].chapters[chIdx].sheets.push({
+            title: row.Title,
+            driveUrl: row.DriveUrl
+          });
+        }
+      });
+    } catch (e) {
+      console.error("Failed to load Google Sheets data", e);
+    } finally {
+      renderPanel();
+    }
+  }
 
   function getPreviewUrl(rawUrl) {
     if (rawUrl.includes('/view')) {
@@ -375,7 +386,7 @@
     });
   });
 
-  renderPanel();
+  loadDataFromSheets();
 })();
 </script>
 </body>
