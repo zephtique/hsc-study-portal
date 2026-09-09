@@ -4,18 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#1F6F78">
+
+<!-- Native App Experience Meta Tags -->
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Lecture Binder">
+<meta name="mobile-web-app-capable" content="yes">
 
 <title>Lecture Binder — HSC 2nd Paper</title>
 
 <!-- PWA Manifest Link -->
 <link rel="manifest" href="manifest.json">
 
-<!-- Favicon & Bookmark Icons -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231F6F78'/><path d='M28 20h48a6 6 0 0 1 6 6v48a6 6 0 0 1-6 6H28a6 6 0 0 1-6-6V26a6 6 0 0 1 6-6z' fill='%23FBFAF6'/><path d='M36 20v60' stroke='%23154F56' stroke-width='4' stroke-dasharray='4 4'/><circle cx='30' cy='32' r='3' fill='%231F6F78'/><circle cx='30' cy='50' r='3' fill='%231F6F78'/><circle cx='30' cy='68' r='3' fill='%231F6F78'/><path d='M44 36h26M44 48h20M44 60h26' stroke='%23736F5F' stroke-width='4' stroke-linecap='round'/></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231F6F78'/><path d='M28 20h48a6 6 0 0 1 6 6v48a6 6 0 0 1-6 6H28a6 6 0 0 1-6-6V26a6 6 0 0 1 6-6z' fill='%23FBFAF6'/><path d='M36 20v60' stroke='%23154F56' stroke-width='4' stroke-dasharray='4 4'/><circle cx='30' cy='32' r='3' fill='%231F6F78'/><circle cx='30' cy='50' r='3' fill='%231F6F78'/><circle cx='30' cy='68' r='3' fill='%231F6F78'/><path d='M44 36h26M44 48h20M44 60h26' stroke='%23736F5F' stroke-width='4' stroke-linecap='round'/></svg>">
+<!-- Favicon & Apple Touch Icons (Generated dynamically via Canvas) -->
+<link id="dynamic-favicon" rel="icon" type="image/png">
+<link id="dynamic-apple-icon" rel="apple-touch-icon">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -267,6 +270,63 @@
 <script>
 (function(){
   "use strict";
+
+  // Dynamic PNG App Icon Generator for Native PWA Installation
+  function generatePngIcon(size) {
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    const scale = size / 100;
+
+    // Background
+    ctx.fillStyle = '#1F6F78';
+    ctx.beginPath();
+    ctx.roundRect(0, 0, size, size, 20 * scale);
+    ctx.fill();
+
+    // Paper Page
+    ctx.fillStyle = '#FBFAF6';
+    ctx.beginPath();
+    ctx.roundRect(22 * scale, 18 * scale, 56 * scale, 64 * scale, 6 * scale);
+    ctx.fill();
+
+    // Spine
+    ctx.strokeStyle = '#154F56';
+    ctx.lineWidth = 3 * scale;
+    ctx.setLineDash([4 * scale, 4 * scale]);
+    ctx.beginPath();
+    ctx.moveTo(32 * scale, 18 * scale);
+    ctx.lineTo(32 * scale, 82 * scale);
+    ctx.stroke();
+
+    // Binder Rings
+    ctx.fillStyle = '#1F6F78';
+    [30, 50, 70].forEach(y => {
+      ctx.beginPath();
+      ctx.arc(27 * scale, y * scale, 3 * scale, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Text Lines
+    ctx.strokeStyle = '#736F5F';
+    ctx.lineWidth = 3 * scale;
+    ctx.setLineDash([]);
+    ctx.lineCap = 'round';
+    [34, 46, 58].forEach((y, i) => {
+      ctx.beginPath();
+      ctx.moveTo(42 * scale, y * scale);
+      ctx.lineTo((i === 1 ? 62 : 68) * scale, y * scale);
+      ctx.stroke();
+    });
+
+    return canvas.toDataURL('image/png');
+  }
+
+  // Set App Favicon & Apple Icon dynamically
+  const png512 = generatePngIcon(512);
+  document.getElementById('dynamic-favicon').href = png512;
+  document.getElementById('dynamic-apple-icon').href = png512;
 
   // Register Service Worker for PWA
   if ('serviceWorker' in navigator) {
