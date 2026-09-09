@@ -13,12 +13,10 @@
 
 <title>Lecture Binder — HSC 2nd Paper</title>
 
-<!-- PWA Manifest Link -->
+<!-- PWA Manifest & App Icons -->
 <link rel="manifest" href="manifest.json">
-
-<!-- Favicon & Apple Touch Icons (Generated dynamically via Canvas) -->
-<link id="dynamic-favicon" rel="icon" type="image/png">
-<link id="dynamic-apple-icon" rel="apple-touch-icon">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-512.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -270,63 +268,6 @@
 <script>
 (function(){
   "use strict";
-
-  // Dynamic PNG App Icon Generator for Native PWA Installation
-  function generatePngIcon(size) {
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext('2d');
-    const scale = size / 100;
-
-    // Background
-    ctx.fillStyle = '#1F6F78';
-    ctx.beginPath();
-    ctx.roundRect(0, 0, size, size, 20 * scale);
-    ctx.fill();
-
-    // Paper Page
-    ctx.fillStyle = '#FBFAF6';
-    ctx.beginPath();
-    ctx.roundRect(22 * scale, 18 * scale, 56 * scale, 64 * scale, 6 * scale);
-    ctx.fill();
-
-    // Spine
-    ctx.strokeStyle = '#154F56';
-    ctx.lineWidth = 3 * scale;
-    ctx.setLineDash([4 * scale, 4 * scale]);
-    ctx.beginPath();
-    ctx.moveTo(32 * scale, 18 * scale);
-    ctx.lineTo(32 * scale, 82 * scale);
-    ctx.stroke();
-
-    // Binder Rings
-    ctx.fillStyle = '#1F6F78';
-    [30, 50, 70].forEach(y => {
-      ctx.beginPath();
-      ctx.arc(27 * scale, y * scale, 3 * scale, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    // Text Lines
-    ctx.strokeStyle = '#736F5F';
-    ctx.lineWidth = 3 * scale;
-    ctx.setLineDash([]);
-    ctx.lineCap = 'round';
-    [34, 46, 58].forEach((y, i) => {
-      ctx.beginPath();
-      ctx.moveTo(42 * scale, y * scale);
-      ctx.lineTo((i === 1 ? 62 : 68) * scale, y * scale);
-      ctx.stroke();
-    });
-
-    return canvas.toDataURL('image/png');
-  }
-
-  // Set App Favicon & Apple Icon dynamically
-  const png512 = generatePngIcon(512);
-  document.getElementById('dynamic-favicon').href = png512;
-  document.getElementById('dynamic-apple-icon').href = png512;
 
   // Register Service Worker for PWA
   if ('serviceWorker' in navigator) {

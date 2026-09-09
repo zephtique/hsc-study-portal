@@ -1,8 +1,10 @@
-const CACHE_NAME = 'lecture-binder-v1';
+const CACHE_NAME = 'lecture-binder-v2';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
   'https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap'
 ];
 
@@ -29,7 +31,6 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Let Google Sheets CSV & Drive links bypass Service Worker network cache
   if (event.request.url.includes('google.com')) return;
 
   event.respondWith(
