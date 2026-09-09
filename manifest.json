@@ -1,6 +1,6 @@
 {
-  "name": "Lecture Binder — HSC 2nd Paper",
-  "short_name": "LectureBinder",
+  "name": "Lecture Binder",
+  "short_name": "Lecture Binder",
   "description": "Access HSC 2nd Paper Physics and Higher Math lecture sheets.",
   "start_url": "./index.html",
   "id": "./index.html",
