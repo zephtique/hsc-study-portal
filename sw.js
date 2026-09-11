@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lecture-binder-v2';
+const CACHE_NAME = 'lecture-binder-v3';
 const ASSETS = [
   './',
   './index.html',
