@@ -71,7 +71,10 @@
   }
 
   html{ transition: background-color .35s ease; }
-  html[data-theme="dark"] .sheet-icon{ color: var(--physics-tint); }
+  html[data-theme="dark"] .sheet-icon{
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  }
   html[data-theme="dark"] .btn-read{ color: #14181A; }
   html[data-theme="dark"] .site-logo path[fill="#FBFAF6"]{ fill: var(--surface); }
   html[data-theme="dark"] .pdf-viewer-container{ box-shadow: 0 4px 16px var(--shadow-soft); }
