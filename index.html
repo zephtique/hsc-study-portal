@@ -156,7 +156,7 @@
 
   .header-actions { display: flex; align-items: center; gap: 16px; }
 
-  /* Theme Toggle */
+  /* Theme Toggle - BUG FIX: Smooth animation and corrected syntax */
   .theme-toggle {
     background: var(--bg-surface);
     border: 1px solid var(--border);
@@ -164,16 +164,23 @@
     width: 40px; height: 40px;
     border-radius: 50%;
     cursor: pointer;
-    display: grid; place-items: center;
+    position: relative;
+    display: flex; justify-content: center; align-items: center;
     transition: all 0.2s ease;
+    overflow: hidden;
   }
   .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
-  .theme-toggle svg { width: 18px; height: 18px; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
   
-  html:not([data-theme="dark"]) .icon-sun { display: block; }
-  html:not([data-theme="dark"]) .icon-moon { display: none; }
-  html[data-theme="dark"]) .icon-sun { display: none; }
-  html[data-theme="dark"] .icon-moon { display: block; }
+  .theme-toggle svg { 
+    position: absolute;
+    width: 18px; height: 18px; 
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease; 
+  }
+  
+  html:not([data-theme="dark"]) .icon-sun { opacity: 1; transform: rotate(0deg) scale(1); pointer-events: auto; }
+  html:not([data-theme="dark"]) .icon-moon { opacity: 0; transform: rotate(90deg) scale(0.5); pointer-events: none; }
+  html[data-theme="dark"] .icon-sun { opacity: 0; transform: rotate(-90deg) scale(0.5); pointer-events: none; }
+  html[data-theme="dark"] .icon-moon { opacity: 1; transform: rotate(0deg) scale(1); pointer-events: auto; }
 
   /* Main Container */
   .container {
@@ -390,7 +397,7 @@
   .pdf-actions { display: flex; align-items: center; gap: 8px; }
   .btn-icon {
     background: var(--bg-surface-hover); border: none;
-    width: 36px; height: 36px; border-radius: 50%;
+    width: 40px; height: 40px; border-radius: 50%;
     display: grid; place-items: center; color: var(--text-main);
     cursor: pointer; transition: background 0.2s ease;
   }
@@ -441,7 +448,9 @@
       </div>
       <div class="header-actions">
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <!-- Sun Icon -->
           <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <!-- Moon Icon -->
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </button>
       </div>
@@ -676,10 +685,7 @@
         </div>
       `;
       
-      // Add haptic feedback specifically for accordion clicks
-      details.querySelector(".chapter-header").addEventListener("click", () => {
-        triggerHaptic(10);
-      });
+      details.querySelector(".chapter-header").addEventListener("click", () => triggerHaptic(10));
 
       const list = details.querySelector(".sheet-list");
 
@@ -734,7 +740,7 @@
 
   // Filter Logic (With Sheets Only)
   document.getElementById("filterSheetsBtn").addEventListener("click", (e) => {
-    triggerHaptic(10); // Haptic on filter toggle
+    triggerHaptic(10);
     filterSheetsOnly = !filterSheetsOnly;
     e.currentTarget.classList.toggle("active", filterSheetsOnly);
     renderPanel();
@@ -766,7 +772,7 @@
   }
   
   function toggleFullscreen() {
-    triggerHaptic(10); // Haptic on fullscreen toggle
+    triggerHaptic(10);
     pdfModalContent.classList.toggle("fullscreen");
     const isFull = pdfModalContent.classList.contains("fullscreen");
     iconMaximize.style.display = isFull ? "none" : "block";
@@ -787,7 +793,7 @@
   // Subject Tabs Logic
   document.querySelectorAll(".subject-tab").forEach(tab => {
     tab.addEventListener("click", () => {
-      triggerHaptic(15); // Haptic on tab switch
+      triggerHaptic(15);
       if (activeSubject === tab.dataset.subject) return;
       activeSubject = tab.dataset.subject;
       document.querySelectorAll(".subject-tab").forEach(t => t.setAttribute("aria-selected", t === tab ? "true" : "false"));
@@ -817,7 +823,7 @@
   }
 
   themeToggleBtn.addEventListener("click", () => {
-    triggerHaptic(10); // Haptic on theme toggle
+    triggerHaptic(10);
     const next = getCurrentTheme() === "dark" ? "light" : "dark";
     applyTheme(next);
     try { localStorage.setItem(THEME_KEY, next); } catch(e) {}
@@ -830,4 +836,3 @@
 </script>
 </body>
 </html>
-```<FollowUp></FollowUp><ElicitationsGroup></ElicitationsGroup>
