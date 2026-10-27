@@ -2,12 +2,12 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#e8eff5" id="metaThemeColor">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#ffffff" id="metaThemeColor">
 
 <!-- Native App Experience Meta Tags -->
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Lecture Binder">
 <meta name="mobile-web-app-capable" content="yes">
 
@@ -28,1098 +28,422 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-512.png">
 
-<!-- Preserves exact font URL cached in sw.js -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
   :root {
-    /* Liquid Glass - Light Mode Palette */
-    --bg-base: #e8eff5;
-    --glass-bg: rgba(255, 255, 255, 0.52);
-    --glass-bg-hover: rgba(255, 255, 255, 0.72);
-    --glass-bg-elevated: rgba(255, 255, 255, 0.82);
-    --glass-sub: rgba(255, 255, 255, 0.38);
+    /* Light Theme Tokens */
+    --bg-app: #f8fafc;
+    --bg-surface: #ffffff;
+    --bg-surface-hover: #f1f5f9;
+    --border: #e2e8f0;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     
-    /* Specular Rim Borders & Shadows */
-    --glass-border: rgba(255, 255, 255, 0.75);
-    --glass-border-subtle: rgba(15, 23, 42, 0.07);
-    --glass-specular: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 1px 0 rgba(255, 255, 255, 0.25);
-    --glass-shadow: 0 12px 32px -8px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
-    --glass-shadow-lg: 0 24px 48px -12px rgba(15, 23, 42, 0.16), 0 4px 12px -2px rgba(15, 23, 42, 0.06);
-    --glass-blur: blur(28px) saturate(190%);
-
-    /* Typography Colors */
-    --ink: #0f172a;
-    --ink-secondary: #475569;
-    --muted: #64748b;
-
-    /* Subject Accents - Physics (Oceanic Teal/Cyan) */
-    --physics: #0284c7;
-    --physics-glow: rgba(2, 132, 199, 0.22);
-    --physics-tint: rgba(2, 132, 199, 0.12);
-    --physics-orb-1: rgba(56, 189, 248, 0.45);
-    --physics-orb-2: rgba(20, 184, 166, 0.35);
-    --physics-orb-3: rgba(99, 102, 241, 0.25);
-
-    /* Subject Accents - Higher Math (Warm Amber/Gold) */
-    --math: #d97706;
-    --math-glow: rgba(217, 119, 6, 0.22);
-    --math-tint: rgba(217, 119, 6, 0.12);
-    --math-orb-1: rgba(251, 191, 36, 0.45);
-    --math-orb-2: rgba(249, 115, 22, 0.32);
-    --math-orb-3: rgba(236, 72, 153, 0.22);
-
-    /* Dynamic Active Subject Variables */
+    /* Subject Colors */
+    --physics: #0ea5e9;
+    --physics-light: #e0f2fe;
+    --math: #f59e0b;
+    --math-light: #fef3c7;
+    
     --accent: var(--physics);
-    --accent-glow: var(--physics-glow);
-    --accent-tint: var(--physics-tint);
-    --orb-1: var(--physics-orb-1);
-    --orb-2: var(--physics-orb-2);
-    --orb-3: var(--physics-orb-3);
-
-    --modal-backdrop: rgba(15, 23, 42, 0.35);
-    --spring: cubic-bezier(0.22, 1, 0.36, 1);
+    --accent-light: var(--physics-light);
+    --modal-overlay: rgba(15, 23, 42, 0.4);
   }
 
   html[data-theme="dark"] {
-    /* Liquid Glass - Dark Mode Palette */
-    --bg-base: #070b12;
-    --glass-bg: rgba(22, 30, 46, 0.55);
-    --glass-bg-hover: rgba(32, 43, 64, 0.68);
-    --glass-bg-elevated: rgba(30, 41, 59, 0.85);
-    --glass-sub: rgba(15, 23, 42, 0.45);
-
-    --glass-border: rgba(255, 255, 255, 0.14);
-    --glass-border-subtle: rgba(255, 255, 255, 0.07);
-    --glass-specular: inset 0 1px 0.5px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0.5px 0 rgba(255, 255, 255, 0.04);
-    --glass-shadow: 0 14px 36px -8px rgba(0, 0, 0, 0.5), 0 2px 8px 0 rgba(0, 0, 0, 0.3);
-    --glass-shadow-lg: 0 28px 60px -12px rgba(0, 0, 0, 0.75);
-
-    --ink: #f8fafc;
-    --ink-secondary: #cbd5e1;
-    --muted: #94a3b8;
-
+    /* Dark Theme Tokens */
+    --bg-app: #0f172a;
+    --bg-surface: #1e293b;
+    --bg-surface-hover: #334155;
+    --border: #334155;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 25px 50px -12px rgb(0 0 0 / 0.5);
+    
     --physics: #38bdf8;
-    --physics-glow: rgba(56, 189, 248, 0.25);
-    --physics-tint: rgba(56, 189, 248, 0.15);
-    --physics-orb-1: rgba(14, 165, 233, 0.28);
-    --physics-orb-2: rgba(13, 148, 136, 0.24);
-    --physics-orb-3: rgba(79, 70, 229, 0.22);
-
+    --physics-light: #0369a1;
     --math: #fbbf24;
-    --math-glow: rgba(251, 191, 36, 0.25);
-    --math-tint: rgba(251, 191, 36, 0.15);
-    --math-orb-1: rgba(245, 158, 11, 0.26);
-    --math-orb-2: rgba(234, 88, 12, 0.22);
-    --math-orb-3: rgba(219, 39, 119, 0.18);
-
-    --modal-backdrop: rgba(2, 6, 23, 0.68);
+    --math-light: #b45309;
+    --modal-overlay: rgba(0, 0, 0, 0.7);
   }
 
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  html {
-    -webkit-text-size-adjust: 100%;
-    scroll-behavior: smooth;
-    -webkit-tap-highlight-color: transparent;
-  }
-
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+  
   body {
-    min-height: 100vh;
-    background-color: var(--bg-base);
-    color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "IBM Plex Sans", "Noto Sans Bengali", sans-serif;
+    background-color: var(--bg-app);
+    color: var(--text-main);
+    font-family: 'Inter', 'Noto Sans Bengali', sans-serif;
     line-height: 1.5;
-    overflow-x: hidden;
-    transition: background-color 0.5s ease, color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  .bn {
-    font-family: "Noto Sans Bengali", "Noto Serif Bengali", sans-serif;
-  }
-  .bn-serif {
-    font-family: "Noto Serif Bengali", "Noto Sans Bengali", serif;
-  }
-  .mono {
-    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
-    letter-spacing: 0.02em;
-  }
+  .bn { font-family: 'Noto Sans Bengali', sans-serif; }
 
-  /* Ambient Liquid Mesh Background */
-  .ambient-canvas {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    overflow: hidden;
-    pointer-events: none;
-  }
-
-  .ambient-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(90px);
-    transition: background 0.8s var(--spring), transform 1.2s var(--spring);
-    will-change: transform, background;
-  }
-
-  .orb-1 {
-    width: 520px;
-    height: 520px;
-    top: -140px;
-    left: -100px;
-    background: var(--orb-1);
-    animation: floatOrb1 18s ease-in-out infinite alternate;
-  }
-
-  .orb-2 {
-    width: 460px;
-    height: 460px;
-    top: 25%;
-    right: -120px;
-    background: var(--orb-2);
-    animation: floatOrb2 22s ease-in-out infinite alternate;
-  }
-
-  .orb-3 {
-    width: 550px;
-    height: 550px;
-    bottom: -180px;
-    left: 20%;
-    background: var(--orb-3);
-    animation: floatOrb3 20s ease-in-out infinite alternate;
-  }
-
-  @keyframes floatOrb1 {
-    0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(80px, 60px) scale(1.12); }
-  }
-  @keyframes floatOrb2 {
-    0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(-70px, 90px) scale(1.08); }
-  }
-  @keyframes floatOrb3 {
-    0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(60px, -70px) scale(1.15); }
-  }
-
-  /* Main Layout Container */
-  .wrap {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 20px 20px 96px;
-  }
-
-  /* Floating Liquid Glass Navbar */
-  header.site-header {
+  /* Navbar (Sticky & Glassmorphic) */
+  .navbar {
     position: sticky;
-    top: 16px;
+    top: 0;
     z-index: 40;
-    margin-bottom: 28px;
+    background: color-mix(in srgb, var(--bg-app) 80%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
   }
 
-  .glass-nav {
+  .nav-content {
+    max-width: 800px;
+    margin: 0 auto;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    padding: 12px 18px;
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    border-radius: 999px;
-    box-shadow: var(--glass-shadow), var(--glass-specular);
-    transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
-  }
-
-  .brand-group {
-    display: flex;
     align-items: center;
-    gap: 14px;
-    min-width: 0;
   }
 
-  .site-logo {
-    width: 42px;
-    height: 42px;
-    border-radius: 14px;
-    flex-shrink: 0;
-    box-shadow: 0 4px 12px var(--accent-glow);
-    transition: transform 0.3s var(--spring), box-shadow 0.3s ease;
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-icon {
+    width: 38px; height: 38px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: grid; place-items: center;
+    color: #fff;
+    box-shadow: var(--shadow-sm);
+    transition: background-color 0.3s ease;
   }
-  .site-logo:hover {
-    transform: scale(1.06) rotate(-2deg);
-  }
-
-  .brand-titles {
-    min-width: 0;
-  }
-
-  .eyebrow-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .eyebrow {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--accent);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  h1.site-title {
-    font-size: clamp(1.2rem, 3vw, 1.45rem);
-    font-weight: 700;
+  .brand-title {
+    font-size: 1.25rem; font-weight: 700;
     letter-spacing: -0.02em;
-    line-height: 1.2;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  }
+  .brand-subtitle {
+    font-size: 0.75rem; color: var(--text-muted);
+    font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase;
   }
 
-  .nav-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-  }
+  .header-actions { display: flex; align-items: center; gap: 16px; }
 
-  .credit-pill {
-    font-size: 0.72rem;
-    color: var(--ink-secondary);
-    background: var(--glass-sub);
-    border: 1px solid var(--glass-border);
-    padding: 6px 12px;
-    border-radius: 999px;
-    box-shadow: var(--glass-specular);
-    white-space: nowrap;
-  }
-
-  /* Liquid Glass Theme Button */
+  /* Theme Toggle */
   .theme-toggle {
-    position: relative;
-    width: 40px;
-    height: 40px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    width: 40px; height: 40px;
     border-radius: 50%;
-    border: 1px solid var(--glass-border);
-    background: var(--glass-bg-elevated);
-    box-shadow: var(--glass-specular), 0 4px 10px rgba(0, 0, 0, 0.06);
     cursor: pointer;
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    color: var(--ink);
-    transition: transform 0.2s var(--spring), border-color 0.25s ease, background 0.25s ease;
+    display: grid; place-items: center;
+    transition: all 0.2s ease;
   }
-  .theme-toggle:hover {
-    transform: scale(1.06);
-    border-color: var(--accent);
-  }
-  .theme-toggle:active {
-    transform: scale(0.92);
-  }
-  .theme-toggle svg {
-    position: absolute;
-    width: 19px;
-    height: 19px;
-    transition: transform 0.5s var(--spring), opacity 0.3s ease;
-  }
-  .theme-toggle .icon-sun { color: var(--math); }
-  .theme-toggle .icon-moon { color: var(--physics); }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .theme-toggle svg { width: 18px; height: 18px; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  
+  html:not([data-theme="dark"]) .icon-sun { display: block; }
+  html:not([data-theme="dark"]) .icon-moon { display: none; }
+  html[data-theme="dark"] .icon-sun { display: none; }
+  html[data-theme="dark"] .icon-moon { display: block; }
 
-  html:not([data-theme="dark"]) .theme-toggle .icon-sun { opacity: 1; transform: rotate(0deg) scale(1); }
-  html:not([data-theme="dark"]) .theme-toggle .icon-moon { opacity: 0; transform: rotate(90deg) scale(0.4); }
-  html[data-theme="dark"] .theme-toggle .icon-sun { opacity: 0; transform: rotate(-90deg) scale(0.4); }
-  html[data-theme="dark"] .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg) scale(1); }
-
-  /* Liquid Glass Subject Switcher */
-  nav.subjects {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin-bottom: 20px;
+  /* Main Container */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 32px 24px 100px;
   }
 
+  /* Segmented Controls (Subject Switcher) */
+  .subject-switcher {
+    display: flex;
+    background: var(--border);
+    padding: 4px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+  }
   .subject-tab {
-    position: relative;
-    cursor: pointer;
-    text-align: left;
-    padding: 18px 20px;
-    border-radius: 24px;
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow), var(--glass-specular);
-    transition: transform 0.28s var(--spring), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden;
-  }
-
-  .subject-tab::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at top right, var(--accent-glow), transparent 70%);
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    pointer-events: none;
-  }
-
-  .subject-tab:hover {
-    transform: translateY(-2px);
-    background: var(--glass-bg-hover);
-  }
-
-  .subject-tab[aria-selected="true"] {
-    background: var(--glass-bg-elevated);
-    border-color: var(--accent);
-    box-shadow: 0 16px 36px -8px var(--accent-glow), var(--glass-specular);
-    transform: translateY(-2px);
-  }
-
-  .subject-tab[aria-selected="true"]::before {
-    opacity: 1;
-  }
-
-  .subject-tab-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 4px;
-  }
-
-  .subject-tab .name-bn {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--ink);
-    transition: color 0.25s ease;
-  }
-
-  .subject-tab[aria-selected="true"] .name-bn {
-    color: var(--accent);
-  }
-
-  .subject-tab .name-en {
-    display: block;
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--ink-secondary);
-  }
-
-  .subject-tab .count-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 12px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 0.73rem;
-    font-weight: 500;
-    color: var(--ink-secondary);
-    background: var(--glass-sub);
-    border: 1px solid var(--glass-border-subtle);
-  }
-
-  .count-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-  }
-  .subject-tab[data-subject="physics"] .count-dot {
-    background: var(--physics);
-    box-shadow: 0 0 8px var(--physics);
-  }
-  .subject-tab[data-subject="math"] .count-dot {
-    background: var(--math);
-    box-shadow: 0 0 8px var(--math);
-  }
-
-  /* Search & Filter Bar */
-  .toolbar {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 22px;
-    align-items: stretch;
-  }
-
-  .search-box {
     flex: 1;
+    background: transparent;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.95rem; font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+  }
+  .subject-tab span.en-label { font-size: 0.7rem; font-weight: 500; opacity: 0.8; }
+  
+  .subject-tab[aria-selected="true"] {
+    background: var(--bg-surface);
+    color: var(--accent);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Search Bar */
+  .search-container {
     position: relative;
-    display: flex;
-    align-items: center;
+    margin-bottom: 32px;
   }
-
   .search-icon {
-    position: absolute;
-    left: 16px;
-    width: 18px;
-    height: 18px;
-    color: var(--muted);
-    pointer-events: none;
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); width: 18px; height: 18px;
   }
-
   .search-input {
     width: 100%;
-    padding: 13px 42px 13px 44px;
-    border-radius: 18px;
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow), var(--glass-specular);
-    color: var(--ink);
-    font: inherit;
-    font-size: 0.92rem;
-    transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    padding: 14px 16px 14px 44px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    font-family: inherit;
   }
-
-  .search-input::placeholder {
-    color: var(--muted);
-  }
-
   .search-input:focus {
-    outline: none;
-    background: var(--glass-bg-elevated);
-    border-color: var(--accent);
-    box-shadow: 0 0 0 4px var(--accent-tint), var(--glass-specular);
+    outline: none; border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
   }
 
-  .kbd-hint {
-    position: absolute;
-    right: 14px;
-    font-size: 0.7rem;
-    color: var(--muted);
-    background: var(--glass-sub);
-    border: 1px solid var(--glass-border);
-    border-radius: 6px;
-    padding: 2px 7px;
-    pointer-events: none;
-  }
+  /* Chapters Grid */
+  .chapters-container { display: flex; flex-direction: column; gap: 16px; }
 
-  .filter-pill {
-    cursor: pointer;
-    padding: 0 16px;
-    border-radius: 18px;
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow), var(--glass-specular);
-    color: var(--ink-secondary);
-    font-size: 0.82rem;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
-    transition: all 0.25s var(--spring);
-  }
-
-  .filter-pill:hover {
-    background: var(--glass-bg-hover);
-    color: var(--ink);
-  }
-
-  .filter-pill[aria-pressed="true"] {
-    background: var(--accent-tint);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  /* Chapter List & Liquid Glass Cards */
-  main.panel {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    min-height: 240px;
-  }
-
-  details.chapter {
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    border-radius: 22px;
-    box-shadow: var(--glass-shadow), var(--glass-specular);
-    overflow: hidden;
-    transition: transform 0.25s var(--spring), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  details.chapter:hover {
-    background: var(--glass-bg-hover);
-  }
-
-  details.chapter[open] {
-    background: var(--glass-bg-elevated);
-    border-color: var(--accent);
-    box-shadow: 0 18px 40px -12px var(--accent-glow), var(--glass-specular);
-  }
-
-  summary.chapter-head {
-    list-style: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 16px 20px;
-    user-select: none;
-  }
-  summary.chapter-head::-webkit-details-marker {
-    display: none;
-  }
-
-  .chapter-code {
-    flex: 0 0 auto;
-    font-size: 0.74rem;
-    font-weight: 600;
-    color: var(--accent);
-    background: var(--accent-tint);
-    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-    padding: 6px 10px;
-    border-radius: 12px;
-    min-width: 58px;
-    text-align: center;
-    box-shadow: var(--glass-specular);
-  }
-
-  .chapter-titles {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-
-  .chapter-name-bn {
-    font-size: 1.08rem;
-    font-weight: 600;
-    color: var(--ink);
-    display: block;
-    line-height: 1.35;
-  }
-
-  .chapter-name-en {
-    font-size: 0.8rem;
-    color: var(--ink-secondary);
-    display: block;
-    margin-top: 2px;
-  }
-
-  .chapter-meta {
-    flex: 0 0 auto;
-    font-size: 0.74rem;
-    font-weight: 500;
-    padding: 4px 10px;
-    border-radius: 999px;
-    background: var(--glass-sub);
-    border: 1px solid var(--glass-border-subtle);
-    color: var(--ink-secondary);
-    white-space: nowrap;
-  }
-
-  .chapter-meta.has-sheets {
-    color: var(--accent);
-    background: var(--accent-tint);
-    border-color: color-mix(in srgb, var(--accent) 25%, transparent);
-  }
-
-  .chapter-chevron {
-    flex: 0 0 auto;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--glass-sub);
-    border: 1px solid var(--glass-border-subtle);
-    display: grid;
-    place-items: center;
-    color: var(--ink-secondary);
-    transition: transform 0.3s var(--spring), background 0.25s ease, color 0.25s ease;
-  }
-
-  details[open] .chapter-chevron {
-    transform: rotate(90deg);
-    background: var(--accent);
-    color: #fff;
-    border-color: transparent;
-  }
-
-  .chapter-body {
-    padding: 4px 18px 18px;
-    border-top: 1px solid var(--glass-border-subtle);
-  }
-
-  .sheet-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 12px;
-  }
-
-  .sheet-empty {
-    font-size: 0.88rem;
-    color: var(--muted);
-    padding: 12px 8px;
-    text-align: center;
-  }
-
-  .sheet-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    background: var(--glass-sub);
-    border: 1px solid var(--glass-border);
+  details.chapter-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 12px 14px;
-    box-shadow: var(--glass-specular);
-    transition: transform 0.2s var(--spring), border-color 0.2s ease, background 0.2s ease;
-  }
-
-  .sheet-row:hover {
-    transform: scale(1.008);
-    background: var(--glass-bg-hover);
-    border-color: var(--accent);
-  }
-
-  .sheet-info-group {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 0;
-    flex: 1;
-  }
-
-  .sheet-icon {
-    flex: 0 0 auto;
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
-    background: var(--accent-tint);
-    border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
-    color: var(--accent);
-    display: grid;
-    place-items: center;
-    font-size: 0.7rem;
-    font-weight: 700;
-  }
-
-  .sheet-info {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-
-  .sheet-name {
-    display: block;
-    font-size: 0.92rem;
-    font-weight: 600;
-    color: var(--ink);
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  details.chapter-card[open] { border-color: var(--accent); box-shadow: var(--shadow-md); }
+
+  summary.chapter-header {
+    padding: 18px 20px;
+    display: flex; align-items: center; gap: 16px;
+    cursor: pointer; list-style: none;
+    background: var(--bg-surface);
+  }
+  summary.chapter-header::-webkit-details-marker { display: none; }
+  summary.chapter-header:hover { background: var(--bg-surface-hover); }
+
+  .chapter-number {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 0.8rem; font-weight: 700;
+    padding: 6px 10px; border-radius: 8px;
+  }
+  .chapter-title-group { flex: 1; }
+  .chapter-title-bn { font-size: 1.1rem; font-weight: 700; display: block; }
+  .chapter-title-en { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+  
+  .chapter-chevron {
+    width: 20px; height: 20px; color: var(--text-muted);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  details[open] .chapter-chevron { transform: rotate(180deg); color: var(--accent); }
+
+  .chapter-content {
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-app);
   }
 
-  .sheet-sub {
+  /* Sheet Rows */
+  .sheet-list { margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .sheet-item {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    padding: 12px 16px;
+    border-radius: 12px;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .sheet-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--border);
+  }
+
+  .sheet-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+  .sheet-icon {
+    width: 36px; height: 36px;
+    background: var(--accent-light); color: var(--accent);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .sheet-icon svg { width: 20px; height: 20px; }
+  .sheet-text { flex: 1; min-width: 0; }
+  .sheet-name {
+    font-size: 0.95rem; font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     display: block;
-    font-size: 0.74rem;
-    color: var(--muted);
-    margin-top: 1px;
   }
 
-  .sheet-actions {
-    display: flex;
-    gap: 8px;
-    flex: 0 0 auto;
-  }
-
-  .btn-read {
-    background: var(--accent);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    padding: 8px 15px;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 4px 12px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.35);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: transform 0.18s var(--spring), filter 0.2s ease;
-  }
-  html[data-theme="dark"] .btn-read {
-    color: #070b12;
-  }
-  .btn-read:hover {
-    filter: brightness(1.08);
-    transform: translateY(-1px);
-  }
-  .btn-read:active {
-    transform: scale(0.96);
-  }
-
-  .btn-drive {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-specular);
-    color: var(--ink-secondary);
-    padding: 8px 14px;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+  .sheet-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  .btn {
+    padding: 8px 14px; border-radius: 8px;
+    font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; border: none; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
     transition: all 0.2s ease;
   }
-  .btn-drive:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: var(--glass-bg-elevated);
-  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { filter: brightness(1.1); }
+  .btn-secondary { background: var(--bg-surface-hover); color: var(--text-main); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--border); }
 
-  /* Spatial Liquid Glass PDF Modal */
-  .pdf-modal-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    background: var(--modal-backdrop);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    opacity: 0;
-    pointer-events: none;
+  /* Empty State */
+  .empty-state { text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.9rem; }
+
+  /* PDF Modal (Full Screen Overlay) */
+  .pdf-modal {
+    position: fixed; inset: 0; z-index: 100;
+    background: var(--modal-overlay);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    opacity: 0; pointer-events: none;
     transition: opacity 0.3s ease;
   }
+  .pdf-modal.open { opacity: 1; pointer-events: auto; }
+  
+  .pdf-modal-content {
+    background: var(--bg-app);
+    height: 92vh;
+    border-radius: 20px 20px 0 0;
+    display: flex; flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: var(--shadow-lg);
+  }
+  .pdf-modal.open .pdf-modal-content { transform: translateY(0); }
 
-  .pdf-modal-backdrop.open {
-    opacity: 1;
-    pointer-events: auto;
+  .pdf-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 24px;
+    background: var(--bg-surface);
+    border-radius: 20px 20px 0 0;
+    border-bottom: 1px solid var(--border);
   }
+  .pdf-title { font-weight: 600; font-size: 1rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70vw; }
+  .btn-close {
+    background: var(--bg-surface-hover); border: none;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: grid; place-items: center; color: var(--text-main);
+    cursor: pointer; transition: background 0.2s ease;
+  }
+  .btn-close:hover { background: var(--border); }
+  
+  .pdf-frame-wrapper { flex: 1; width: 100%; position: relative; background: var(--bg-app); }
+  .pdf-frame-wrapper iframe { width: 100%; height: 100%; border: none; position: absolute; inset: 0; }
 
-  .pdf-viewer-container {
-    width: min(1040px, 100%);
-    height: min(88vh, 860px);
-    background: var(--glass-bg-elevated);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    border-radius: 26px;
-    box-shadow: var(--glass-shadow-lg), var(--glass-specular);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transform: scale(0.94) translateY(20px);
-    transition: transform 0.38s var(--spring), width 0.3s ease, height 0.3s ease, border-radius 0.3s ease;
+  /* Skeleton Loading */
+  .skeleton-card {
+    height: 84px; background: var(--bg-surface);
+    border: 1px solid var(--border); border-radius: 16px; margin-bottom: 16px;
+    position: relative; overflow: hidden;
   }
+  .skeleton-card::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--text-muted) 10%, transparent), transparent);
+    animation: shimmer 1.5s infinite;
+  }
+  @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-  .pdf-modal-backdrop.open .pdf-viewer-container {
-    transform: scale(1) translateY(0);
-  }
-
-  .pdf-viewer-container.is-fullscreen {
-    width: 100vw;
-    height: 100vh;
-    border-radius: 0;
-  }
-
-  .pdf-viewer-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 20px;
-    background: var(--glass-sub);
-    border-bottom: 1px solid var(--glass-border);
-  }
-
-  .pdf-title-wrap {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-  }
-
-  .pdf-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--accent);
-    flex-shrink: 0;
-  }
-
-  #viewerTitle {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--ink);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .pdf-header-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-  }
-
-  .pdf-ctrl-btn {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-specular);
-    color: var(--ink-secondary);
-    padding: 6px 12px;
-    border-radius: 999px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    transition: all 0.2s ease;
-  }
-  .pdf-ctrl-btn:hover {
-    background: var(--glass-bg-hover);
-    color: var(--ink);
-    border-color: var(--accent);
-  }
-
-  .pdf-viewer-container iframe {
-    width: 100%;
-    flex: 1;
-    border: none;
-    background: rgba(0, 0, 0, 0.03);
-  }
-
-  /* Skeleton Loading Styles */
-  .skeleton-item {
-    height: 68px;
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 22px;
-    box-shadow: var(--glass-specular);
-    animation: skeleton-pulse 1.4s infinite ease-in-out;
-  }
-  @keyframes skeleton-pulse {
-    0%, 100% { opacity: 0.65; }
-    50% { opacity: 0.3; }
-  }
-
-  footer.note {
-    margin-top: 32px;
-    padding: 16px 20px;
-    border-radius: 18px;
-    background: var(--glass-sub);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-specular);
-    font-size: 0.8rem;
-    color: var(--ink-secondary);
-    text-align: center;
-  }
-
-  @media (max-width: 620px) {
-    .wrap {
-      padding: 12px 14px 80px;
-    }
-    .glass-nav {
-      padding: 10px 14px;
-    }
-    .credit-pill {
-      display: none;
-    }
-    nav.subjects {
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    .subject-tab {
-      padding: 14px;
-      border-radius: 20px;
-    }
-    .subject-tab .name-bn {
-      font-size: 1.08rem;
-    }
-    .toolbar {
-      flex-direction: column;
-    }
-    .filter-pill {
-      padding: 11px 16px;
-      justify-content: center;
-    }
-    .kbd-hint {
-      display: none;
-    }
-    .chapter-meta {
-      display: none;
-    }
-    .sheet-row {
-      flex-direction: column;
-      align-items: stretch;
-    }
-    .sheet-actions {
-      width: 100%;
-    }
-    .btn-read, .btn-drive {
-      flex: 1;
-      justify-content: center;
-    }
-    .pdf-modal-backdrop {
-      padding: 0;
-      align-items: flex-end;
-    }
-    .pdf-viewer-container {
-      width: 100%;
-      height: 92vh;
-      border-radius: 24px 24px 0 0;
-    }
+  @media (max-width: 640px) {
+    .container { padding: 24px 16px 100px; }
+    .sheet-item { flex-direction: column; align-items: stretch; gap: 12px; }
+    .sheet-actions { display: grid; grid-template-columns: 1fr 1fr; }
+    .btn { justify-content: center; }
+    .pdf-modal-content { height: 95vh; }
   }
 </style>
 </head>
 <body class="subject-physics">
 
-<!-- Ambient Liquid Glass Mesh Background -->
-<div class="ambient-canvas" aria-hidden="true">
-  <div class="ambient-orb orb-1"></div>
-  <div class="ambient-orb orb-2"></div>
-  <div class="ambient-orb orb-3"></div>
-</div>
-
-<div id="app" class="wrap">
-  <header class="site-header">
-    <div class="glass-nav">
-      <div class="brand-group">
-        <svg class="site-logo" viewBox="0 0 100 100">
-          <rect width="100" height="100" rx="24" fill="var(--accent)"/>
-          <path d="M28 20h48a6 6 0 0 1 6 6v48a6 6 0 0 1-6 6H28a6 6 0 0 1-6-6V26a6 6 0 0 1 6-6z" fill="#FBFAF6"/>
-          <path d="M36 20v60" stroke="var(--accent)" stroke-width="4" stroke-dasharray="4 4" opacity="0.65"/>
-          <circle cx="30" cy="32" r="3" fill="var(--accent)"/>
-          <circle cx="30" cy="50" r="3" fill="var(--accent)"/>
-          <circle cx="30" cy="68" r="3" fill="var(--accent)"/>
-          <path d="M44 36h26M44 48h20M44 60h26" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
-        </svg>
-        <div class="brand-titles">
-          <div class="eyebrow-row">
-            <p class="eyebrow mono">HSC · 2ND PAPER</p>
-          </div>
-          <h1 class="site-title">Lecture Binder</h1>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-content">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+        </div>
+        <div>
+          <h1 class="brand-title">Lecture Binder</h1>
+          <div class="brand-subtitle">HSC · 2nd Paper</div>
         </div>
       </div>
-
-      <div class="nav-right">
-        <span class="credit-pill mono">Made by Zephyrizz</span>
-        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" aria-pressed="false">
-          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="4.5"></circle>
-            <line x1="12" y1="2.5" x2="12" y2="5"></line>
-            <line x1="12" y1="19" x2="12" y2="21.5"></line>
-            <line x1="4.2" y1="4.2" x2="6" y2="6"></line>
-            <line x1="18" y1="18" x2="19.8" y2="19.8"></line>
-            <line x1="2.5" y1="12" x2="5" y2="12"></line>
-            <line x1="19" y1="12" x2="21.5" y2="12"></line>
-            <line x1="4.2" y1="19.8" x2="6" y2="18"></line>
-            <line x1="18" y1="6" x2="19.8" y2="4.2"></line>
-          </svg>
-          <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20.6 15.2A8.9 8.9 0 0 1 8.8 3.4a.7.7 0 0 0-.9-.9 9.9 9.9 0 1 0 13.6 13.6.7.7 0 0 0-.9-.9z"></path>
-          </svg>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </button>
       </div>
     </div>
-  </header>
-
-  <nav class="subjects" role="tablist" aria-label="Subjects">
-    <button class="subject-tab" data-subject="physics" role="tab" aria-selected="true">
-      <div class="subject-tab-top">
-        <span class="name-bn bn-serif">পদার্থবিজ্ঞান</span>
-      </div>
-      <span class="name-en">Physics · 2nd Paper</span>
-      <span class="count-badge mono">
-        <span class="count-dot"></span>
-        <span data-role="count">10 chapters</span>
-      </span>
-    </button>
-
-    <button class="subject-tab" data-subject="math" role="tab" aria-selected="false">
-      <div class="subject-tab-top">
-        <span class="name-bn bn-serif">উচ্চতর গণিত</span>
-      </div>
-      <span class="name-en">Higher Math · 2nd Paper</span>
-      <span class="count-badge mono">
-        <span class="count-dot"></span>
-        <span data-role="count">10 chapters</span>
-      </span>
-    </button>
   </nav>
 
-  <!-- Liquid Glass Search & Filter Toolbar -->
-  <div class="toolbar">
-    <div class="search-box">
-      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="11" cy="11" r="8"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-      </svg>
-      <input type="search" id="searchInput" class="search-input" placeholder="Search chapters or lecture sheets..." autocomplete="off">
-      <span class="kbd-hint mono">/</span>
+  <main class="container">
+    <!-- Subject Switcher -->
+    <div class="subject-switcher" role="tablist">
+      <button class="subject-tab" data-subject="physics" role="tab" aria-selected="true">
+        <span class="bn">পদার্থবিজ্ঞান</span>
+        <span class="en-label">Physics</span>
+      </button>
+      <button class="subject-tab" data-subject="math" role="tab" aria-selected="false">
+        <span class="bn">উচ্চতর গণিত</span>
+        <span class="en-label">Higher Math</span>
+      </button>
     </div>
-    <button type="button" class="filter-pill" id="filterAvailableBtn" aria-pressed="false">
-      <span>With Sheets Only</span>
-    </button>
-  </div>
 
-  <main class="panel" id="panel" role="tabpanel"></main>
+    <!-- Search Bar -->
+    <div class="search-container">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="searchInput" class="search-input" placeholder="Search for a specific lecture or topic..." autocomplete="off">
+    </div>
 
-  <footer class="note">
-    Sheets are rendered directly using your Google Drive links. Select any chapter to expand its lecture sheets and read them in the spatial viewer.
-  </footer>
-</div>
+    <!-- Chapters Content -->
+    <div class="chapters-container" id="panel" role="tabpanel">
+      <!-- Injected via JS -->
+    </div>
+  </main>
 
-<!-- Spatial Glass PDF Viewer Modal -->
-<div class="pdf-modal-backdrop" id="viewerModal" role="dialog" aria-modal="true" aria-labelledby="viewerTitle">
-  <div class="pdf-viewer-container" id="viewerContainer">
-    <div class="pdf-viewer-header">
-      <div class="pdf-title-wrap">
-        <span class="pdf-dot"></span>
-        <span id="viewerTitle" class="mono">PDF Preview</span>
+  <!-- Fullscreen PDF Modal -->
+  <div class="pdf-modal" id="pdfModal">
+    <div class="pdf-modal-content">
+      <div class="pdf-header">
+        <div class="pdf-title" id="viewerTitle">Document Preview</div>
+        <button class="btn-close" id="closeViewerBtn" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
       </div>
-      <div class="pdf-header-actions">
-        <a href="#" target="_blank" rel="noopener" class="pdf-ctrl-btn" id="modalDriveBtn">Open Drive ↗</a>
-        <button type="button" class="pdf-ctrl-btn" id="fullscreenViewerBtn">Fullscreen</button>
-        <button type="button" class="pdf-ctrl-btn" id="closeViewerBtn">✕ Close</button>
+      <div class="pdf-frame-wrapper">
+        <iframe id="pdfFrame" src="" title="Document Preview"></iframe>
       </div>
     </div>
-    <iframe id="pdfFrame" src="" title="Document Preview"></iframe>
   </div>
-</div>
 
 <script>
 (function(){
   "use strict";
 
-  // Register Service Worker for PWA
+  // Service Worker Registration
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(err => {
-        console.error('ServiceWorker registration failed: ', err);
-      });
+      navigator.serviceWorker.register('./sw.js').catch(err => console.error('ServiceWorker failed: ', err));
     });
   }
 
   const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQLFwSjs3po1TpI0XSsjBeJtYf_g9j81XSAxz_L6gh6xsamgt3Zy6KXTqQvApFKHtL59mFxrlGOAsuC/pub?output=csv";
   const CACHE_KEY = "lecture_binder_data_v1";
   const CACHE_TIME_KEY = "lecture_binder_time_v1";
-  const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes cache
+  const CACHE_DURATION = 10 * 60 * 1000; 
 
   const BASE_SYLLABUS = {
     physics: {
@@ -1156,13 +480,11 @@
 
   let SYLLABUS = JSON.parse(JSON.stringify(BASE_SYLLABUS));
   let activeSubject = "physics";
-  let searchQuery = "";
-  let filterWithSheetsOnly = false;
-  let currentActivePreviewUrl = "";
+  let currentSearchQuery = "";
 
   function renderSkeletons() {
     const panel = document.getElementById("panel");
-    panel.innerHTML = Array(5).fill('<div class="skeleton-item"></div>').join('');
+    panel.innerHTML = Array(6).fill('<div class="skeleton-card"></div>').join('');
   }
 
   function parseCSV(text) {
@@ -1170,7 +492,6 @@
     if (lines.length < 2) return [];
     const headers = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g, ''));
     const results = [];
-
     for (let i = 1; i < lines.length; i++) {
       if (!lines[i].trim()) continue;
       const values = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.trim().replace(/^"|"$/g, ''));
@@ -1183,7 +504,6 @@
 
   async function loadDataFromSheets() {
     renderSkeletons();
-
     const cachedData = localStorage.getItem(CACHE_KEY);
     const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
     const isCacheValid = cachedTime && (Date.now() - parseInt(cachedTime, 10) < CACHE_DURATION);
@@ -1191,10 +511,9 @@
     if (cachedData && isCacheValid) {
       applyParsedData(JSON.parse(cachedData));
       renderPanel();
-      fetchFreshData();
+      fetchFreshData(); 
       return;
     }
-
     await fetchFreshData();
   }
 
@@ -1203,13 +522,11 @@
       const res = await fetch(SHEET_CSV_URL);
       const csvText = await res.text();
       const data = parseCSV(csvText);
-
       localStorage.setItem(CACHE_KEY, JSON.stringify(data));
       localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
-
       applyParsedData(data);
     } catch (e) {
-      console.error("Failed to load Google Sheets data", e);
+      console.error("Failed to fetch Google Sheets CSV", e);
     } finally {
       renderPanel();
     }
@@ -1220,260 +537,161 @@
     data.forEach(row => {
       const subj = row.Subject ? row.Subject.toLowerCase().trim() : "";
       const chIdx = parseInt(row.ChapterIndex, 10) - 1;
-
       if (SYLLABUS[subj] && SYLLABUS[subj].chapters[chIdx]) {
-        SYLLABUS[subj].chapters[chIdx].sheets.push({
-          title: row.Title,
-          driveUrl: row.DriveUrl
-        });
+        SYLLABUS[subj].chapters[chIdx].sheets.push({ title: row.Title, driveUrl: row.DriveUrl });
       }
     });
   }
 
   function getPreviewUrl(rawUrl) {
     if (!rawUrl) return "";
-    let cleanUrl = rawUrl;
-    const match = rawUrl.match(/https?:\/\/[^\s\)\>\]]+/);
-    if (match) {
-      cleanUrl = match[0];
-    }
-    if (cleanUrl.includes('/view')) {
-      return cleanUrl.replace(/\/view.*$/, '/preview');
-    }
-    return cleanUrl;
-  }
-
-  function updateTabCounts() {
-    document.querySelectorAll(".subject-tab").forEach(tab => {
-      const subj = tab.dataset.subject;
-      const totalCh = SYLLABUS[subj].chapters.length;
-      let sheetTotal = 0;
-      SYLLABUS[subj].chapters.forEach(c => { sheetTotal += c.sheets.length; });
-      const label = sheetTotal > 0
-        ? totalCh + " chapters · " + sheetTotal + " sheet" + (sheetTotal === 1 ? "" : "s")
-        : totalCh + " chapters";
-      tab.querySelector('[data-role="count"]').textContent = label;
-    });
-  }
-
-  function syncSubjectThemeVars() {
-    const root = document.documentElement;
-    root.style.setProperty("--accent", `var(--${activeSubject})`);
-    root.style.setProperty("--accent-glow", `var(--${activeSubject}-glow)`);
-    root.style.setProperty("--accent-tint", `var(--${activeSubject}-tint)`);
-    root.style.setProperty("--orb-1", `var(--${activeSubject}-orb-1)`);
-    root.style.setProperty("--orb-2", `var(--${activeSubject}-orb-2)`);
-    root.style.setProperty("--orb-3", `var(--${activeSubject}-orb-3)`);
+    let cleanUrl = rawUrl.match(/https?:\/\/[^\s\)\>\]]+/)?.[0] || rawUrl;
+    return cleanUrl.includes('/view') ? cleanUrl.replace(/\/view.*$/, '/preview') : cleanUrl;
   }
 
   function renderPanel() {
     document.body.className = "subject-" + activeSubject;
-    syncSubjectThemeVars();
+    document.documentElement.style.setProperty("--accent", `var(--${activeSubject})`);
+    document.documentElement.style.setProperty("--accent-light", `var(--${activeSubject}-light)`);
 
     const subj = SYLLABUS[activeSubject];
     const panel = document.getElementById("panel");
     panel.innerHTML = "";
 
-    const q = searchQuery.toLowerCase();
+    const query = currentSearchQuery.toLowerCase();
     const fragment = document.createDocumentFragment();
-    let visibleCount = 0;
 
     subj.chapters.forEach((ch, idx) => {
       const code = subj.prefix + "-" + String(idx + 1).padStart(2, "0");
-      const matchingSheets = ch.sheets.filter(s => s.title.toLowerCase().includes(q));
-      const chapterMatches =
-        ch.bn.toLowerCase().includes(q) ||
-        ch.en.toLowerCase().includes(q) ||
-        code.toLowerCase().includes(q);
+      
+      // Filter sheets based on search query
+      const filteredSheets = ch.sheets.filter(s => s.title.toLowerCase().includes(query));
+      const isChapterMatch = ch.bn.includes(query) || ch.en.toLowerCase().includes(query);
+      
+      // Hide chapter if searching and no matches exist in this chapter
+      if (query && !isChapterMatch && filteredSheets.length === 0) return;
 
-      if (filterWithSheetsOnly && ch.sheets.length === 0) return;
-      if (q && !chapterMatches && matchingSheets.length === 0) return;
-
-      visibleCount++;
-      const sheetsToDisplay = (q && !chapterMatches) ? matchingSheets : ch.sheets;
-      const sheetCount = sheetsToDisplay.length;
+      const sheetsToRender = query && !isChapterMatch ? filteredSheets : ch.sheets;
+      const sheetCount = sheetsToRender.length;
 
       const details = document.createElement("details");
-      details.className = "chapter";
-      if (q) details.open = true;
+      details.className = "chapter-card";
+      if (query) details.open = true; // Auto-expand if searching
 
-      const summary = document.createElement("summary");
-      summary.className = "chapter-head";
-      summary.innerHTML = `
-        <span class="chapter-code mono">${code}</span>
-        <span class="chapter-titles">
-          <span class="chapter-name-bn bn-serif">${ch.bn}</span>
-          <span class="chapter-name-en">${ch.en}</span>
-        </span>
-        <span class="chapter-meta mono ${sheetCount > 0 ? 'has-sheets' : ''}">
-          ${sheetCount > 0 ? sheetCount + " sheet" + (sheetCount === 1 ? "" : "s") : "empty"}
-        </span>
-        <span class="chapter-chevron">›</span>
+      details.innerHTML = `
+        <summary class="chapter-header">
+          <span class="chapter-number">${code}</span>
+          <div class="chapter-title-group">
+            <span class="chapter-title-bn bn">${ch.bn}</span>
+            <span class="chapter-title-en">${ch.en}</span>
+          </div>
+          <svg class="chapter-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </summary>
+        <div class="chapter-content">
+          <div class="sheet-list"></div>
+        </div>
       `;
-      details.appendChild(summary);
 
-      const body = document.createElement("div");
-      body.className = "chapter-body";
-
-      const list = document.createElement("div");
-      list.className = "sheet-list";
+      const list = details.querySelector(".sheet-list");
 
       if (sheetCount === 0) {
-        list.innerHTML = `<div class="sheet-empty bn">এখনও কোনো লেকচার শীট নেই।</div>`;
+        list.innerHTML = `<div class="empty-state bn">কোনো লেকচার শীট পাওয়া যায়নি।</div>`;
       } else {
-        sheetsToDisplay.forEach(s => {
+        sheetsToRender.forEach(s => {
           const previewUrl = getPreviewUrl(s.driveUrl);
-          const row = document.createElement("div");
-          row.className = "sheet-row";
-
-          const infoGroup = document.createElement("div");
-          infoGroup.className = "sheet-info-group";
-
-          const icon = document.createElement("span");
-          icon.className = "sheet-icon mono";
-          icon.textContent = "PDF";
-
-          const info = document.createElement("span");
-          info.className = "sheet-info";
-
-          const nameSpan = document.createElement("span");
-          nameSpan.className = "sheet-name bn";
-          nameSpan.textContent = s.title;
-
-          const subSpan = document.createElement("span");
-          subSpan.className = "sheet-sub";
-          subSpan.textContent = "Google Drive Document";
-
-          info.appendChild(nameSpan);
-          info.appendChild(subSpan);
-          infoGroup.appendChild(icon);
-          infoGroup.appendChild(info);
-
-          const actions = document.createElement("div");
-          actions.className = "sheet-actions";
-
-          const readBtn = document.createElement("button");
-          readBtn.type = "button";
-          readBtn.className = "btn-read";
-          readBtn.textContent = "Read PDF";
-          readBtn.addEventListener("click", () => openPdfViewer(previewUrl, s.title, s.driveUrl));
-
-          const driveLink = document.createElement("a");
-          driveLink.href = s.driveUrl;
-          driveLink.target = "_blank";
-          driveLink.rel = "noopener";
-          driveLink.className = "btn-drive";
-          driveLink.textContent = "Open Drive";
-
-          actions.appendChild(readBtn);
-          actions.appendChild(driveLink);
-
-          row.appendChild(infoGroup);
-          row.appendChild(actions);
-          list.appendChild(row);
+          const item = document.createElement("div");
+          item.className = "sheet-item";
+          
+          item.innerHTML = `
+            <div class="sheet-info">
+              <div class="sheet-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              </div>
+              <div class="sheet-text">
+                <span class="sheet-name bn">${s.title}</span>
+              </div>
+            </div>
+            <div class="sheet-actions">
+              <button type="button" class="btn btn-primary btn-read" data-url="${previewUrl}" data-title="${s.title}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg> Read
+              </button>
+              <a href="${s.driveUrl}" target="_blank" rel="noopener" class="btn btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg> Open
+              </a>
+            </div>
+          `;
+          
+          item.querySelector('.btn-read').addEventListener("click", (e) => {
+             openPdfModal(e.currentTarget.dataset.url, e.currentTarget.dataset.title);
+          });
+          list.appendChild(item);
         });
       }
-
-      body.appendChild(list);
-      details.appendChild(body);
       fragment.appendChild(details);
     });
 
-    if (visibleCount === 0) {
-      panel.innerHTML = `<div class="sheet-empty bn" style="padding: 36px 16px;">কোনো অধ্যায় বা লেকচার শীট খুঁজে পাওয়া যায়নি।</div>`;
+    if (fragment.children.length === 0) {
+      panel.innerHTML = `<div class="empty-state bn">আপনার অনুসন্ধানের সাথে কোনো ফলাফল মিলেনি।</div>`;
     } else {
       panel.appendChild(fragment);
     }
-
-    updateTabCounts();
   }
 
-  // Modal PDF Viewer Controls
-  const viewerModal = document.getElementById("viewerModal");
-  const viewerContainer = document.getElementById("viewerContainer");
-  const frame = document.getElementById("pdfFrame");
+  // Search Logic
+  document.getElementById("searchInput").addEventListener("input", (e) => {
+    currentSearchQuery = e.target.value.trim();
+    renderPanel();
+  });
+
+  // Modal PDF Viewer Logic
+  const pdfModal = document.getElementById("pdfModal");
+  const pdfFrame = document.getElementById("pdfFrame");
   const viewerTitle = document.getElementById("viewerTitle");
-  const modalDriveBtn = document.getElementById("modalDriveBtn");
-  const fullscreenBtn = document.getElementById("fullscreenViewerBtn");
 
-  function openPdfViewer(previewUrl, title, rawDriveUrl) {
-    if (viewerModal.classList.contains("open") && currentActivePreviewUrl === previewUrl) {
-      closePdfViewer();
-      return;
-    }
-    currentActivePreviewUrl = previewUrl;
-    frame.src = previewUrl;
-    viewerTitle.textContent = title ? title : "PDF Preview";
-    modalDriveBtn.href = rawDriveUrl || previewUrl;
-    viewerModal.classList.add("open");
-    document.body.style.overflow = "hidden";
+  function openPdfModal(url, title) {
+    pdfFrame.src = url;
+    viewerTitle.textContent = title || "Document Preview";
+    pdfModal.classList.add("open");
+    document.body.style.overflow = "hidden"; // Prevent background scrolling
   }
 
-  function closePdfViewer() {
-    viewerModal.classList.remove("open");
-    viewerContainer.classList.remove("is-fullscreen");
-    fullscreenBtn.textContent = "Fullscreen";
+  function closePdfModal() {
+    pdfModal.classList.remove("open");
     document.body.style.overflow = "";
-    setTimeout(() => {
-      frame.src = "";
-      currentActivePreviewUrl = "";
-    }, 280);
+    setTimeout(() => { pdfFrame.src = ""; }, 300); // Clear after animation
   }
 
-  document.getElementById("closeViewerBtn").addEventListener("click", closePdfViewer);
-
-  fullscreenBtn.addEventListener("click", () => {
-    const isFull = viewerContainer.classList.toggle("is-fullscreen");
-    fullscreenBtn.textContent = isFull ? "Exit Fullscreen" : "Fullscreen";
+  document.getElementById("closeViewerBtn").addEventListener("click", closePdfModal);
+  
+  // Close modal on background click
+  pdfModal.addEventListener("click", (e) => {
+    if (e.target === pdfModal) closePdfModal();
   });
 
-  viewerModal.addEventListener("click", (e) => {
-    if (e.target === viewerModal) closePdfViewer();
+  // Subject Tabs Logic
+  document.querySelectorAll(".subject-tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      if (activeSubject === tab.dataset.subject) return;
+      activeSubject = tab.dataset.subject;
+      document.querySelectorAll(".subject-tab").forEach(t => t.setAttribute("aria-selected", t === tab ? "true" : "false"));
+      document.getElementById("searchInput").value = "";
+      currentSearchQuery = "";
+      renderPanel();
+    });
   });
 
-  // Search & Filter Events
-  const searchInput = document.getElementById("searchInput");
-  const filterAvailableBtn = document.getElementById("filterAvailableBtn");
-
-  searchInput.addEventListener("input", (e) => {
-    searchQuery = e.target.value.trim();
-    renderPanel();
-  });
-
-  filterAvailableBtn.addEventListener("click", () => {
-    filterWithSheetsOnly = !filterWithSheetsOnly;
-    filterAvailableBtn.setAttribute("aria-pressed", filterWithSheetsOnly ? "true" : "false");
-    renderPanel();
-  });
-
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "/" && document.activeElement !== searchInput) {
-      e.preventDefault();
-      searchInput.focus();
-    } else if (e.key === "Escape" && viewerModal.classList.contains("open")) {
-      closePdfViewer();
-    }
-  });
-
-  // Dark Mode Toggle
+  // Theme Logic
   const THEME_KEY = "lecture_binder_theme";
   const themeToggleBtn = document.getElementById("themeToggle");
   const metaThemeColor = document.getElementById("metaThemeColor");
 
   function syncMetaThemeColor() {
-    if (metaThemeColor) {
-      const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg-base").trim();
-      metaThemeColor.setAttribute("content", bg);
-    }
+    metaThemeColor.setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue('--bg-app').trim());
   }
 
   function applyTheme(theme) {
-    if (theme === "dark") {
-      document.documentElement.setAttribute("data-theme", "dark");
-    } else {
-      document.documentElement.removeAttribute("data-theme");
-    }
-    themeToggleBtn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+    if (theme === "dark") document.documentElement.setAttribute("data-theme", "dark");
+    else document.documentElement.removeAttribute("data-theme");
     syncMetaThemeColor();
   }
 
@@ -1481,28 +699,15 @@
     return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
   }
 
-  applyTheme(getCurrentTheme());
-
   themeToggleBtn.addEventListener("click", () => {
     const next = getCurrentTheme() === "dark" ? "light" : "dark";
     applyTheme(next);
     try { localStorage.setItem(THEME_KEY, next); } catch(e) {}
   });
 
-  // Subject Tab Switching
-  document.querySelectorAll(".subject-tab").forEach(tab => {
-    tab.addEventListener("click", () => {
-      if (activeSubject === tab.dataset.subject) return;
-      activeSubject = tab.dataset.subject;
-      document.querySelectorAll(".subject-tab").forEach(t => {
-        t.setAttribute("aria-selected", t === tab ? "true" : "false");
-      });
-      closePdfViewer();
-      renderPanel();
-    });
-  });
-
+  applyTheme(getCurrentTheme());
   loadDataFromSheets();
+
 })();
 </script>
 </body>
