@@ -28,9 +28,9 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-512.png">
 
-<link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
-<link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
-<link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap)" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
   :root {
@@ -100,12 +100,11 @@
   .desktop-bg {
     position: fixed; inset: 0; z-index: -1;
     pointer-events: none; overflow: hidden;
-    opacity: 0.12; /* Boosted visibility for testing */
+    opacity: 0.12;
     transition: opacity 0.4s ease;
   }
   html[data-theme="dark"] .desktop-bg { opacity: 0.08; }
   
-  /* Hides elements if screen is narrower than 850px to keep UI clean */
   @media (max-width: 850px) { .desktop-bg { display: none; } }
   
   @keyframes spatialDrift {
@@ -124,7 +123,6 @@
   }
   .bg-icon svg { width: 1em; height: 1em; stroke-width: 1.5; }
 
-  /* Positions specifically avoiding the center 800px */
   .icon-1 { top: 12%; left: 8%; font-size: 7rem; animation-delay: 0s; color: var(--accent); }
   .icon-2 { top: 45%; left: 4%; font-size: 4rem; animation-delay: -4s; }
   .icon-3 { bottom: 15%; left: 12%; font-size: 6rem; animation-delay: -7s; }
@@ -557,7 +555,14 @@
 (function(){
   "use strict";
 
-  // --- Global Haptic Event Delegator ---
+  // --- RESTORED: Missing Haptic Function ---
+  function triggerHaptic(duration = 30) {
+    if ('vibrate' in navigator) {
+      try { navigator.vibrate(duration); } catch (e) {}
+    }
+  }
+
+  // --- Global Haptic Event Delegator (For Mobile) ---
   document.body.addEventListener('touchstart', (e) => {
     const hapticTarget = e.target.closest('.subject-tab, .filter-pill, .chapter-header, .btn, .theme-toggle, .btn-icon');
     if (hapticTarget && 'vibrate' in navigator) {
@@ -571,7 +576,7 @@
     });
   }
 
-  const SHEET_CSV_URL = "[https://docs.google.com/spreadsheets/d/e/2PACX-1vQLFwSjs3po1TpI0XSsjBeJtYf_g9j81XSAxz_L6gh6xsamgt3Zy6KXTqQvApFKHtL59mFxrlGOAsuC/pub?output=csv](https://docs.google.com/spreadsheets/d/e/2PACX-1vQLFwSjs3po1TpI0XSsjBeJtYf_g9j81XSAxz_L6gh6xsamgt3Zy6KXTqQvApFKHtL59mFxrlGOAsuC/pub?output=csv)";
+  const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQLFwSjs3po1TpI0XSsjBeJtYf_g9j81XSAxz_L6gh6xsamgt3Zy6KXTqQvApFKHtL59mFxrlGOAsuC/pub?output=csv";
   const CACHE_KEY = "lecture_binder_data_v1";
   const CACHE_TIME_KEY = "lecture_binder_time_v1";
   const CACHE_DURATION = 10 * 60 * 1000; 
@@ -713,7 +718,7 @@
     document.body.className = "subject-" + activeSubject;
     document.documentElement.style.setProperty("--accent", `var(--${activeSubject})`);
     document.documentElement.style.setProperty("--accent-light", `var(--${activeSubject}-light)`);
-    updateBackgroundElements(); // Update BG icons on render
+    updateBackgroundElements();
 
     const subj = SYLLABUS[activeSubject];
     const panel = document.getElementById("panel");
@@ -783,12 +788,16 @@
           `;
           
           item.querySelector('.btn-read').addEventListener("click", (e) => {
+             triggerHaptic(30);
              openPdfModal(e.currentTarget.dataset.url, e.currentTarget.dataset.title);
           });
           list.appendChild(item);
         });
       }
       fragment.appendChild(details);
+      
+      // Attach click event for haptic feedback
+      details.querySelector(".chapter-header").addEventListener("click", () => triggerHaptic(30));
     });
 
     if (fragment.children.length === 0) {
@@ -806,6 +815,7 @@
 
   // Filter Logic (With Sheets Only)
   document.getElementById("filterSheetsBtn").addEventListener("click", (e) => {
+    triggerHaptic(30);
     filterSheetsOnly = !filterSheetsOnly;
     e.currentTarget.classList.toggle("active", filterSheetsOnly);
     renderPanel();
@@ -837,6 +847,7 @@
   }
   
   function toggleFullscreen() {
+    triggerHaptic(30);
     pdfModalContent.classList.toggle("fullscreen");
     const isFull = pdfModalContent.classList.contains("fullscreen");
     iconMaximize.style.display = isFull ? "none" : "block";
@@ -844,6 +855,7 @@
   }
 
   document.getElementById("closeViewerBtn").addEventListener("click", () => {
+    triggerHaptic(30);
     closePdfModal();
   });
   
@@ -856,6 +868,7 @@
   // Subject Tabs Logic
   document.querySelectorAll(".subject-tab").forEach(tab => {
     tab.addEventListener("click", () => {
+      triggerHaptic(50);
       if (activeSubject === tab.dataset.subject) return;
       activeSubject = tab.dataset.subject;
       document.querySelectorAll(".subject-tab").forEach(t => t.setAttribute("aria-selected", t === tab ? "true" : "false"));
@@ -885,6 +898,7 @@
   }
 
   themeToggleBtn.addEventListener("click", () => {
+    triggerHaptic(30);
     const next = getCurrentTheme() === "dark" ? "light" : "dark";
     applyTheme(next);
     try { localStorage.setItem(THEME_KEY, next); } catch(e) {}
@@ -897,3 +911,5 @@
 </script>
 </body>
 </html>
+```<FollowUp>Did everything load correctly after updating your `sw.js` and doing a hard refresh?</FollowUp>
+<ElicitationsGroup></ElicitationsGroup>
