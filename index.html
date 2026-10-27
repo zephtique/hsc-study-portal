@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff" id="metaThemeColor">
 
 <!-- Native App Experience Meta Tags -->
@@ -77,37 +77,62 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   
-  html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+    background-color: var(--bg-app);
+    overscroll-behavior-y: none;
+  }
   
   body {
     background-color: var(--bg-app);
     color: var(--text-main);
     font-family: 'Inter', 'Noto Sans Bengali', sans-serif;
     line-height: 1.5;
+    min-height: 100dvh;
+    padding-bottom: env(safe-area-inset-bottom);
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   .bn { font-family: 'Noto Sans Bengali', sans-serif; }
+  .mono { font-family: monospace; }
 
-  /* Navbar (Sticky & Glassmorphic) */
-  .navbar {
+  /* Spatial Floating Top Bar & Credits */
+  .top-meta-bar {
+    max-width: 800px;
+    margin: 16px auto 12px;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  
+  .navbar-wrapper {
     position: sticky;
-    top: 0;
+    top: 12px;
     z-index: 40;
-    background: color-mix(in srgb, var(--bg-app) 80%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 24px;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    padding: 0 16px;
   }
 
-  .nav-content {
+  .navbar {
+    background: color-mix(in srgb, var(--bg-surface) 85%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 12px 20px;
+    box-shadow: var(--shadow-sm);
     max-width: 800px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: all 0.3s ease;
   }
 
   .brand { display: flex; align-items: center; gap: 12px; }
@@ -147,14 +172,14 @@
   
   html:not([data-theme="dark"]) .icon-sun { display: block; }
   html:not([data-theme="dark"]) .icon-moon { display: none; }
-  html[data-theme="dark"] .icon-sun { display: none; }
+  html[data-theme="dark"]) .icon-sun { display: none; }
   html[data-theme="dark"] .icon-moon { display: block; }
 
   /* Main Container */
   .container {
     max-width: 800px;
     margin: 0 auto;
-    padding: 32px 24px 100px;
+    padding: 24px 24px 100px;
   }
 
   /* Segmented Controls (Subject Switcher) */
@@ -185,17 +210,22 @@
     box-shadow: var(--shadow-sm);
   }
 
-  /* Search Bar */
+  /* Search & Filter Controls */
+  .controls-row {
+    display: flex; gap: 12px;
+    margin-bottom: 32px;
+    align-items: stretch;
+  }
   .search-container {
     position: relative;
-    margin-bottom: 32px;
+    flex: 1;
   }
   .search-icon {
     position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
     color: var(--text-muted); width: 18px; height: 18px;
   }
   .search-input {
-    width: 100%;
+    width: 100%; height: 100%;
     background: var(--bg-surface);
     border: 1px solid var(--border);
     padding: 14px 16px 14px 44px;
@@ -210,6 +240,21 @@
     outline: none; border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-light);
   }
+
+  /* Filter Pill */
+  .filter-pill {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 0 16px; border-radius: 12px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-weight: 600; font-size: 0.9rem;
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: var(--shadow-sm);
+    white-space: nowrap;
+  }
+  .filter-pill:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-pill.active { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
 
   /* Chapters Grid */
   .chapters-container { display: flex; flex-direction: column; gap: 16px; }
@@ -243,6 +288,14 @@
   .chapter-title-bn { font-size: 1.1rem; font-weight: 700; display: block; }
   .chapter-title-en { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
   
+  /* Sheet Count Badge */
+  .sheet-count {
+    font-size: 0.75rem; font-weight: 600;
+    background: var(--border); color: var(--text-muted);
+    padding: 4px 8px; border-radius: 6px;
+    white-space: nowrap;
+  }
+
   .chapter-chevron {
     width: 20px; height: 20px; color: var(--text-muted);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -265,11 +318,7 @@
     display: flex; justify-content: space-between; align-items: center; gap: 16px;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .sheet-item:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--border);
-  }
+  .sheet-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--border); }
 
   .sheet-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
   .sheet-icon {
@@ -283,8 +332,7 @@
   .sheet-text { flex: 1; min-width: 0; }
   .sheet-name {
     font-size: 0.95rem; font-weight: 600;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    display: block;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;
   }
 
   .sheet-actions { display: flex; gap: 8px; flex-shrink: 0; }
@@ -303,7 +351,7 @@
   /* Empty State */
   .empty-state { text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.9rem; }
 
-  /* PDF Modal (Full Screen Overlay) */
+  /* PDF Modal */
   .pdf-modal {
     position: fixed; inset: 0; z-index: 100;
     background: var(--modal-overlay);
@@ -316,30 +364,37 @@
   
   .pdf-modal-content {
     background: var(--bg-app);
-    height: 92vh;
+    height: 92vh; width: 100%; margin: 0 auto;
     border-radius: 20px 20px 0 0;
     display: flex; flex-direction: column;
     transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: var(--shadow-lg);
   }
   .pdf-modal.open .pdf-modal-content { transform: translateY(0); }
+  
+  .pdf-modal-content.fullscreen {
+    height: 100dvh;
+    border-radius: 0;
+  }
 
   .pdf-header {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 16px 24px;
+    padding: 12px 20px;
     background: var(--bg-surface);
-    border-radius: 20px 20px 0 0;
+    border-radius: inherit;
     border-bottom: 1px solid var(--border);
   }
-  .pdf-title { font-weight: 600; font-size: 1rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70vw; }
-  .btn-close {
+  .pdf-title { font-weight: 600; font-size: 0.95rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60vw; }
+  
+  .pdf-actions { display: flex; align-items: center; gap: 8px; }
+  .btn-icon {
     background: var(--bg-surface-hover); border: none;
-    width: 32px; height: 32px; border-radius: 50%;
+    width: 36px; height: 36px; border-radius: 50%;
     display: grid; place-items: center; color: var(--text-main);
     cursor: pointer; transition: background 0.2s ease;
   }
-  .btn-close:hover { background: var(--border); }
+  .btn-icon:hover { background: var(--border); }
   
   .pdf-frame-wrapper { flex: 1; width: 100%; position: relative; background: var(--bg-app); }
   .pdf-frame-wrapper iframe { width: 100%; height: 100%; border: none; position: absolute; inset: 0; }
@@ -358,27 +413,31 @@
   @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
   @media (max-width: 640px) {
-    .container { padding: 24px 16px 100px; }
+    .controls-row { flex-direction: column; }
+    .filter-pill { padding: 12px 16px; justify-content: center; }
     .sheet-item { flex-direction: column; align-items: stretch; gap: 12px; }
     .sheet-actions { display: grid; grid-template-columns: 1fr 1fr; }
     .btn { justify-content: center; }
-    .pdf-modal-content { height: 95vh; }
+    .pdf-modal-content { height: 96dvh; }
   }
 </style>
 </head>
 <body class="subject-physics">
 
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="nav-content">
+  <!-- Spatial Metadata Bar -->
+  <div class="top-meta-bar">
+    <span class="mono">HSC · 2ND PAPER</span>
+    <span class="mono">Made by Zephyrizz</span>
+  </div>
+
+  <!-- Floating Navbar -->
+  <div class="navbar-wrapper">
+    <nav class="navbar">
       <div class="brand">
         <div class="brand-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
         </div>
-        <div>
-          <h1 class="brand-title">Lecture Binder</h1>
-          <div class="brand-subtitle">HSC · 2nd Paper</div>
-        </div>
+        <h1 class="brand-title">Lecture Binder</h1>
       </div>
       <div class="header-actions">
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
@@ -386,8 +445,8 @@
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </button>
       </div>
-    </div>
-  </nav>
+    </nav>
+  </div>
 
   <main class="container">
     <!-- Subject Switcher -->
@@ -402,10 +461,16 @@
       </button>
     </div>
 
-    <!-- Search Bar -->
-    <div class="search-container">
-      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      <input type="text" id="searchInput" class="search-input" placeholder="Search for a specific lecture or topic..." autocomplete="off">
+    <!-- Search & Filter Controls -->
+    <div class="controls-row">
+      <div class="search-container">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search for a specific lecture or topic..." autocomplete="off">
+      </div>
+      <button class="filter-pill" id="filterSheetsBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+        With Sheets Only
+      </button>
     </div>
 
     <!-- Chapters Content -->
@@ -419,9 +484,21 @@
     <div class="pdf-modal-content">
       <div class="pdf-header">
         <div class="pdf-title" id="viewerTitle">Document Preview</div>
-        <button class="btn-close" id="closeViewerBtn" aria-label="Close">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
+        <div class="pdf-actions">
+          <button class="btn-icon" id="fullscreenViewerBtn" aria-label="Toggle Fullscreen">
+            <!-- Maximize Icon -->
+            <svg id="icon-maximize" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+            </svg>
+            <!-- Minimize Icon -->
+            <svg id="icon-minimize" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+              <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>
+            </svg>
+          </button>
+          <button class="btn-icon" id="closeViewerBtn" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
       </div>
       <div class="pdf-frame-wrapper">
         <iframe id="pdfFrame" src="" title="Document Preview"></iframe>
@@ -433,7 +510,13 @@
 (function(){
   "use strict";
 
-  // Service Worker Registration
+  // --- Haptic Feedback Helper ---
+  function triggerHaptic(duration = 15) {
+    if (typeof navigator.vibrate === 'function') {
+      try { navigator.vibrate(duration); } catch (e) {}
+    }
+  }
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').catch(err => console.error('ServiceWorker failed: ', err));
@@ -481,6 +564,7 @@
   let SYLLABUS = JSON.parse(JSON.stringify(BASE_SYLLABUS));
   let activeSubject = "physics";
   let currentSearchQuery = "";
+  let filterSheetsOnly = false;
 
   function renderSkeletons() {
     const panel = document.getElementById("panel");
@@ -564,19 +648,18 @@
     subj.chapters.forEach((ch, idx) => {
       const code = subj.prefix + "-" + String(idx + 1).padStart(2, "0");
       
-      // Filter sheets based on search query
       const filteredSheets = ch.sheets.filter(s => s.title.toLowerCase().includes(query));
       const isChapterMatch = ch.bn.includes(query) || ch.en.toLowerCase().includes(query);
       
-      // Hide chapter if searching and no matches exist in this chapter
       if (query && !isChapterMatch && filteredSheets.length === 0) return;
+      if (filterSheetsOnly && ch.sheets.length === 0) return;
 
       const sheetsToRender = query && !isChapterMatch ? filteredSheets : ch.sheets;
       const sheetCount = sheetsToRender.length;
 
       const details = document.createElement("details");
       details.className = "chapter-card";
-      if (query) details.open = true; // Auto-expand if searching
+      if (query) details.open = true;
 
       details.innerHTML = `
         <summary class="chapter-header">
@@ -585,12 +668,18 @@
             <span class="chapter-title-bn bn">${ch.bn}</span>
             <span class="chapter-title-en">${ch.en}</span>
           </div>
+          <span class="sheet-count">${sheetCount} sheet${sheetCount !== 1 ? 's' : ''}</span>
           <svg class="chapter-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </summary>
         <div class="chapter-content">
           <div class="sheet-list"></div>
         </div>
       `;
+      
+      // Add haptic feedback specifically for accordion clicks
+      details.querySelector(".chapter-header").addEventListener("click", () => {
+        triggerHaptic(10);
+      });
 
       const list = details.querySelector(".sheet-list");
 
@@ -643,27 +732,54 @@
     renderPanel();
   });
 
-  // Modal PDF Viewer Logic
+  // Filter Logic (With Sheets Only)
+  document.getElementById("filterSheetsBtn").addEventListener("click", (e) => {
+    triggerHaptic(10); // Haptic on filter toggle
+    filterSheetsOnly = !filterSheetsOnly;
+    e.currentTarget.classList.toggle("active", filterSheetsOnly);
+    renderPanel();
+  });
+
+  // Modal PDF Viewer & Fullscreen Logic
   const pdfModal = document.getElementById("pdfModal");
+  const pdfModalContent = document.querySelector(".pdf-modal-content");
   const pdfFrame = document.getElementById("pdfFrame");
   const viewerTitle = document.getElementById("viewerTitle");
+  
+  const iconMaximize = document.getElementById("icon-maximize");
+  const iconMinimize = document.getElementById("icon-minimize");
 
   function openPdfModal(url, title) {
     pdfFrame.src = url;
     viewerTitle.textContent = title || "Document Preview";
     pdfModal.classList.add("open");
-    document.body.style.overflow = "hidden"; // Prevent background scrolling
+    document.body.style.overflow = "hidden";
   }
 
   function closePdfModal() {
     pdfModal.classList.remove("open");
     document.body.style.overflow = "";
-    setTimeout(() => { pdfFrame.src = ""; }, 300); // Clear after animation
+    setTimeout(() => { 
+      pdfFrame.src = ""; 
+      if (pdfModalContent.classList.contains("fullscreen")) toggleFullscreen();
+    }, 300);
+  }
+  
+  function toggleFullscreen() {
+    triggerHaptic(10); // Haptic on fullscreen toggle
+    pdfModalContent.classList.toggle("fullscreen");
+    const isFull = pdfModalContent.classList.contains("fullscreen");
+    iconMaximize.style.display = isFull ? "none" : "block";
+    iconMinimize.style.display = isFull ? "block" : "none";
   }
 
-  document.getElementById("closeViewerBtn").addEventListener("click", closePdfModal);
+  document.getElementById("closeViewerBtn").addEventListener("click", () => {
+    triggerHaptic(10);
+    closePdfModal();
+  });
   
-  // Close modal on background click
+  document.getElementById("fullscreenViewerBtn").addEventListener("click", toggleFullscreen);
+  
   pdfModal.addEventListener("click", (e) => {
     if (e.target === pdfModal) closePdfModal();
   });
@@ -671,6 +787,7 @@
   // Subject Tabs Logic
   document.querySelectorAll(".subject-tab").forEach(tab => {
     tab.addEventListener("click", () => {
+      triggerHaptic(15); // Haptic on tab switch
       if (activeSubject === tab.dataset.subject) return;
       activeSubject = tab.dataset.subject;
       document.querySelectorAll(".subject-tab").forEach(t => t.setAttribute("aria-selected", t === tab ? "true" : "false"));
@@ -685,14 +802,14 @@
   const themeToggleBtn = document.getElementById("themeToggle");
   const metaThemeColor = document.getElementById("metaThemeColor");
 
-  function syncMetaThemeColor() {
-    metaThemeColor.setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue('--bg-app').trim());
+  function syncMetaThemeColor(theme) {
+    metaThemeColor.setAttribute("content", theme === "dark" ? "#0f172a" : "#f8fafc");
   }
 
   function applyTheme(theme) {
     if (theme === "dark") document.documentElement.setAttribute("data-theme", "dark");
     else document.documentElement.removeAttribute("data-theme");
-    syncMetaThemeColor();
+    syncMetaThemeColor(theme);
   }
 
   function getCurrentTheme() {
@@ -700,6 +817,7 @@
   }
 
   themeToggleBtn.addEventListener("click", () => {
+    triggerHaptic(10); // Haptic on theme toggle
     const next = getCurrentTheme() === "dark" ? "light" : "dark";
     applyTheme(next);
     try { localStorage.setItem(THEME_KEY, next); } catch(e) {}
@@ -712,3 +830,4 @@
 </script>
 </body>
 </html>
+```<FollowUp></FollowUp><ElicitationsGroup></ElicitationsGroup>
