@@ -518,12 +518,14 @@
 (function(){
   "use strict";
 
-  // --- Haptic Feedback Helper ---
-  function triggerHaptic(duration = 30) {
-    if ('vibrate' in navigator) {
-      try { navigator.vibrate(duration); } catch (e) { console.warn("Haptic failed", e); }
+  // --- Global Haptic Event Delegator ---
+  // Bypasses the OS click-delay by binding directly to raw touch events
+  document.body.addEventListener('touchstart', (e) => {
+    const hapticTarget = e.target.closest('.subject-tab, .filter-pill, .chapter-header, .btn, .theme-toggle, .btn-icon');
+    if (hapticTarget && 'vibrate' in navigator) {
+      try { navigator.vibrate(40); } catch (err) {}
     }
-  }
+  }, { passive: true });
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -683,8 +685,6 @@
           <div class="sheet-list"></div>
         </div>
       `;
-      
-      details.querySelector(".chapter-header").addEventListener("click", () => triggerHaptic(30));
 
       const list = details.querySelector(".sheet-list");
 
@@ -716,7 +716,6 @@
           `;
           
           item.querySelector('.btn-read').addEventListener("click", (e) => {
-             triggerHaptic(30);
              openPdfModal(e.currentTarget.dataset.url, e.currentTarget.dataset.title);
           });
           list.appendChild(item);
@@ -740,7 +739,6 @@
 
   // Filter Logic (With Sheets Only)
   document.getElementById("filterSheetsBtn").addEventListener("click", (e) => {
-    triggerHaptic(30);
     filterSheetsOnly = !filterSheetsOnly;
     e.currentTarget.classList.toggle("active", filterSheetsOnly);
     renderPanel();
@@ -772,7 +770,6 @@
   }
   
   function toggleFullscreen() {
-    triggerHaptic(30);
     pdfModalContent.classList.toggle("fullscreen");
     const isFull = pdfModalContent.classList.contains("fullscreen");
     iconMaximize.style.display = isFull ? "none" : "block";
@@ -780,7 +777,6 @@
   }
 
   document.getElementById("closeViewerBtn").addEventListener("click", () => {
-    triggerHaptic(30);
     closePdfModal();
   });
   
@@ -793,7 +789,6 @@
   // Subject Tabs Logic
   document.querySelectorAll(".subject-tab").forEach(tab => {
     tab.addEventListener("click", () => {
-      triggerHaptic(50);
       if (activeSubject === tab.dataset.subject) return;
       activeSubject = tab.dataset.subject;
       document.querySelectorAll(".subject-tab").forEach(t => t.setAttribute("aria-selected", t === tab ? "true" : "false"));
@@ -823,7 +818,6 @@
   }
 
   themeToggleBtn.addEventListener("click", () => {
-    triggerHaptic(30);
     const next = getCurrentTheme() === "dark" ? "light" : "dark";
     applyTheme(next);
     try { localStorage.setItem(THEME_KEY, next); } catch(e) {}
@@ -836,3 +830,4 @@
 </script>
 </body>
 </html>
+```<FollowUp></FollowUp><ElicitationsGroup></ElicitationsGroup>
