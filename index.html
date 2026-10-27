@@ -156,7 +156,7 @@
 
   .header-actions { display: flex; align-items: center; gap: 16px; }
 
-  /* Theme Toggle - BUG FIX: Smooth animation and corrected syntax */
+  /* Theme Toggle */
   .theme-toggle {
     background: var(--bg-surface);
     border: 1px solid var(--border);
@@ -520,9 +520,9 @@
   "use strict";
 
   // --- Haptic Feedback Helper ---
-  function triggerHaptic(duration = 15) {
-    if (typeof navigator.vibrate === 'function') {
-      try { navigator.vibrate(duration); } catch (e) {}
+  function triggerHaptic(duration = 30) {
+    if ('vibrate' in navigator) {
+      try { navigator.vibrate(duration); } catch (e) { console.warn("Haptic failed", e); }
     }
   }
 
@@ -685,7 +685,7 @@
         </div>
       `;
       
-      details.querySelector(".chapter-header").addEventListener("click", () => triggerHaptic(10));
+      details.querySelector(".chapter-header").addEventListener("click", () => triggerHaptic(30));
 
       const list = details.querySelector(".sheet-list");
 
@@ -717,6 +717,7 @@
           `;
           
           item.querySelector('.btn-read').addEventListener("click", (e) => {
+             triggerHaptic(30);
              openPdfModal(e.currentTarget.dataset.url, e.currentTarget.dataset.title);
           });
           list.appendChild(item);
@@ -740,7 +741,7 @@
 
   // Filter Logic (With Sheets Only)
   document.getElementById("filterSheetsBtn").addEventListener("click", (e) => {
-    triggerHaptic(10);
+    triggerHaptic(30);
     filterSheetsOnly = !filterSheetsOnly;
     e.currentTarget.classList.toggle("active", filterSheetsOnly);
     renderPanel();
@@ -772,7 +773,7 @@
   }
   
   function toggleFullscreen() {
-    triggerHaptic(10);
+    triggerHaptic(30);
     pdfModalContent.classList.toggle("fullscreen");
     const isFull = pdfModalContent.classList.contains("fullscreen");
     iconMaximize.style.display = isFull ? "none" : "block";
@@ -780,7 +781,7 @@
   }
 
   document.getElementById("closeViewerBtn").addEventListener("click", () => {
-    triggerHaptic(10);
+    triggerHaptic(30);
     closePdfModal();
   });
   
@@ -793,7 +794,7 @@
   // Subject Tabs Logic
   document.querySelectorAll(".subject-tab").forEach(tab => {
     tab.addEventListener("click", () => {
-      triggerHaptic(15);
+      triggerHaptic(50);
       if (activeSubject === tab.dataset.subject) return;
       activeSubject = tab.dataset.subject;
       document.querySelectorAll(".subject-tab").forEach(t => t.setAttribute("aria-selected", t === tab ? "true" : "false"));
@@ -823,7 +824,7 @@
   }
 
   themeToggleBtn.addEventListener("click", () => {
-    triggerHaptic(10);
+    triggerHaptic(30);
     const next = getCurrentTheme() === "dark" ? "light" : "dark";
     applyTheme(next);
     try { localStorage.setItem(THEME_KEY, next); } catch(e) {}
@@ -836,3 +837,4 @@
 </script>
 </body>
 </html>
+```<FollowUp></FollowUp><ElicitationsGroup></ElicitationsGroup>
