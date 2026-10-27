@@ -28,9 +28,9 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-512.png">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+<link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+<link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap)" rel="stylesheet">
 
 <style>
   :root {
@@ -95,6 +95,41 @@
 
   .bn { font-family: 'Noto Sans Bengali', sans-serif; }
   .mono { font-family: monospace; }
+
+  /* --- Desktop Spatial Background Elements --- */
+  .desktop-bg {
+    position: fixed; inset: 0; z-index: -1;
+    pointer-events: none; overflow: hidden;
+    opacity: 0.05; /* Subtle visibility */
+    transition: opacity 0.4s ease;
+  }
+  html[data-theme="dark"] .desktop-bg { opacity: 0.03; }
+  
+  @media (max-width: 1100px) { .desktop-bg { display: none; } }
+  
+  @keyframes spatialDrift {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-30px) rotate(8deg); }
+  }
+
+  .bg-icon {
+    position: absolute;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    display: flex; justify-content: center; align-items: center;
+    color: var(--text-main);
+    animation: spatialDrift 14s ease-in-out infinite;
+    white-space: nowrap;
+  }
+  .bg-icon svg { width: 1em; height: 1em; stroke-width: 1.5; }
+
+  /* Positions specifically avoiding the center 800px */
+  .icon-1 { top: 12%; left: 8%; font-size: 7rem; animation-delay: 0s; color: var(--accent); }
+  .icon-2 { top: 45%; left: 4%; font-size: 4rem; animation-delay: -4s; }
+  .icon-3 { bottom: 15%; left: 12%; font-size: 6rem; animation-delay: -7s; }
+  .icon-4 { top: 18%; right: 10%; font-size: 5rem; animation-delay: -2s; }
+  .icon-5 { top: 50%; right: 6%; font-size: 7rem; animation-delay: -9s; color: var(--accent); }
+  .icon-6 { bottom: 12%; right: 8%; font-size: 4.5rem; animation-delay: -5s; }
 
   /* Spatial Floating Top Bar & Credits */
   .top-meta-bar {
@@ -430,6 +465,9 @@
 </head>
 <body class="subject-physics">
 
+  <!-- Desktop Subtle Background Elements Layer -->
+  <div id="desktopBg" class="desktop-bg" aria-hidden="true"></div>
+
   <!-- Spatial Metadata Bar -->
   <div class="top-meta-bar">
     <span class="mono">HSC · 2ND PAPER</span>
@@ -519,7 +557,6 @@
   "use strict";
 
   // --- Global Haptic Event Delegator ---
-  // Bypasses the OS click-delay by binding directly to raw touch events
   document.body.addEventListener('touchstart', (e) => {
     const hapticTarget = e.target.closest('.subject-tab, .filter-pill, .chapter-header, .btn, .theme-toggle, .btn-icon');
     if (hapticTarget && 'vibrate' in navigator) {
@@ -533,7 +570,7 @@
     });
   }
 
-  const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQLFwSjs3po1TpI0XSsjBeJtYf_g9j81XSAxz_L6gh6xsamgt3Zy6KXTqQvApFKHtL59mFxrlGOAsuC/pub?output=csv";
+  const SHEET_CSV_URL = "[https://docs.google.com/spreadsheets/d/e/2PACX-1vQLFwSjs3po1TpI0XSsjBeJtYf_g9j81XSAxz_L6gh6xsamgt3Zy6KXTqQvApFKHtL59mFxrlGOAsuC/pub?output=csv](https://docs.google.com/spreadsheets/d/e/2PACX-1vQLFwSjs3po1TpI0XSsjBeJtYf_g9j81XSAxz_L6gh6xsamgt3Zy6KXTqQvApFKHtL59mFxrlGOAsuC/pub?output=csv)";
   const CACHE_KEY = "lecture_binder_data_v1";
   const CACHE_TIME_KEY = "lecture_binder_time_v1";
   const CACHE_DURATION = 10 * 60 * 1000; 
@@ -575,6 +612,34 @@
   let activeSubject = "physics";
   let currentSearchQuery = "";
   let filterSheetsOnly = false;
+
+  // --- Background Spatial Elements Logic ---
+  function updateBackgroundElements() {
+    const bgLayer = document.getElementById("desktopBg");
+    if (!bgLayer) return;
+    
+    const icons = {
+      physics: [
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(45 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-45 12 12)"/></svg>`,
+        `E=mc²`,
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 11V7a8 8 0 0116 0v4M4 11h4v7H4zM16 11h4v7h-4z"/></svg>`,
+        `F=ma`,
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 12c3.33-6 6.67-6 10 0 3.33 6 6.67 6 10 0"/></svg>`,
+        `λ`
+      ],
+      math: [
+        `∫`,
+        `π`,
+        `∑`,
+        `∞`,
+        `Δ`,
+        `ƒ(x)`
+      ]
+    };
+
+    const activeIcons = icons[activeSubject];
+    bgLayer.innerHTML = activeIcons.map((content, i) => `<div class="bg-icon icon-${i+1}">${content}</div>`).join('');
+  }
 
   function renderSkeletons() {
     const panel = document.getElementById("panel");
@@ -647,6 +712,7 @@
     document.body.className = "subject-" + activeSubject;
     document.documentElement.style.setProperty("--accent", `var(--${activeSubject})`);
     document.documentElement.style.setProperty("--accent-light", `var(--${activeSubject}-light)`);
+    updateBackgroundElements(); // Update BG icons on render
 
     const subj = SYLLABUS[activeSubject];
     const panel = document.getElementById("panel");
@@ -830,4 +896,4 @@
 </script>
 </body>
 </html>
-<FollowUp></FollowUp><ElicitationsGroup></ElicitationsGroup>
+```<FollowUp></FollowUp><ElicitationsGroup></ElicitationsGroup>
