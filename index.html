@@ -96,39 +96,49 @@
   .bn { font-family: 'Noto Sans Bengali', sans-serif; }
   .mono { font-family: monospace; }
 
-  /* --- Desktop Spatial Background Elements --- */
+  /* --- Desktop Spatial Background Doodles --- */
   .desktop-bg {
     position: fixed; inset: 0; z-index: -1;
     pointer-events: none; overflow: hidden;
-    opacity: 0.12;
     transition: opacity 0.4s ease;
   }
-  html[data-theme="dark"] .desktop-bg { opacity: 0.08; }
   
-  @media (max-width: 850px) { .desktop-bg { display: none; } }
+  @media (max-width: 900px) { .desktop-bg { display: none; } }
   
-  @keyframes spatialDrift {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-30px) rotate(8deg); }
+  @keyframes doodleFloat1 {
+    0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+    50% { transform: translateY(-20px) rotate(calc(var(--rot, 0deg) + 6deg)); }
+  }
+  @keyframes doodleFloat2 {
+    0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+    50% { transform: translateY(-28px) rotate(calc(var(--rot, 0deg) - 5deg)); }
+  }
+  @keyframes doodleFloat3 {
+    0%, 100% { transform: translateX(0) rotate(var(--rot, 0deg)); }
+    50% { transform: translateX(15px) rotate(calc(var(--rot, 0deg) + 4deg)); }
   }
 
-  .bg-icon {
+  .bg-doodle {
     position: absolute;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', serif;
     font-weight: 700;
     display: flex; justify-content: center; align-items: center;
     color: var(--text-main);
-    animation: spatialDrift 14s ease-in-out infinite;
     white-space: nowrap;
+    opacity: 0;
+    animation-fill-mode: both;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    transition: opacity 0.6s ease;
   }
-  .bg-icon svg { width: 1em; height: 1em; stroke-width: 1.5; }
+  .desktop-bg.ready .bg-doodle { opacity: var(--doodle-opacity, 0.10); }
+  html[data-theme="dark"] .desktop-bg.ready .bg-doodle { opacity: calc(var(--doodle-opacity, 0.10) * 0.6); }
 
-  .icon-1 { top: 12%; left: 8%; font-size: 7rem; animation-delay: 0s; color: var(--accent); }
-  .icon-2 { top: 45%; left: 4%; font-size: 4rem; animation-delay: -4s; }
-  .icon-3 { bottom: 15%; left: 12%; font-size: 6rem; animation-delay: -7s; }
-  .icon-4 { top: 18%; right: 10%; font-size: 5rem; animation-delay: -2s; }
-  .icon-5 { top: 50%; right: 6%; font-size: 7rem; animation-delay: -9s; color: var(--accent); }
-  .icon-6 { bottom: 12%; right: 8%; font-size: 4.5rem; animation-delay: -5s; }
+  .bg-doodle svg { width: 1em; height: 1em; stroke-width: 1.5; fill: none; stroke: currentColor; }
+  .bg-doodle.accent { color: var(--accent); }
+  .bg-doodle.formula { font-family: 'Georgia', 'Times New Roman', serif; font-style: italic; letter-spacing: 0.02em; }
+
+  /* --- Positions generated via JS, these are fallback layout helpers --- */
 
   /* Spatial Floating Top Bar & Credits */
   .top-meta-bar {
@@ -619,32 +629,84 @@
   let currentSearchQuery = "";
   let filterSheetsOnly = false;
 
-  // --- Background Spatial Elements Logic ---
+  // --- Rich Desktop Background Doodles ---
+  const DOODLE_ELEMENTS = {
+    physics: [
+      // Left side doodles
+      { content: 'E=mc²', x: '6%', y: '8%', size: '2.8rem', cls: 'formula accent', rot: '-8deg', opacity: 0.14, anim: 1, delay: 0, dur: 16 },
+      { content: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(0 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/></svg>', x: '3%', y: '22%', size: '5rem', cls: 'accent', rot: '0deg', opacity: 0.12, anim: 2, delay: -3, dur: 18 },
+      { content: 'F=ma', x: '10%', y: '35%', size: '2rem', cls: 'formula', rot: '12deg', opacity: 0.09, anim: 1, delay: -5, dur: 15 },
+      { content: '<svg viewBox="0 0 24 24"><path d="M2 12c3.33-6 6.67-6 10 0 3.33 6 6.67 6 10 0"/></svg>', x: '5%', y: '48%', size: '4.5rem', cls: 'accent', rot: '-5deg', opacity: 0.11, anim: 3, delay: -2, dur: 20 },
+      { content: 'V=IR', x: '12%', y: '58%', size: '1.8rem', cls: 'formula', rot: '6deg', opacity: 0.08, anim: 1, delay: -8, dur: 14 },
+      { content: '<svg viewBox="0 0 24 24"><path d="M12 2v6M12 18v4M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M2 12h6M18 12h4M4.93 19.07l4.24-4.24M14.83 9.17l4.24-4.24"/></svg>', x: '4%', y: '72%', size: '3.5rem', cls: '', rot: '15deg', opacity: 0.10, anim: 2, delay: -6, dur: 17 },
+      { content: 'PV=nRT', x: '9%', y: '82%', size: '1.6rem', cls: 'formula', rot: '-10deg', opacity: 0.07, anim: 1, delay: -4, dur: 13 },
+      { content: 'λ', x: '14%', y: '15%', size: '3.5rem', cls: 'formula', rot: '5deg', opacity: 0.08, anim: 3, delay: -7, dur: 19 },
+      { content: '<svg viewBox="0 0 32 32"><path d="M4 28 Q16 4 28 28" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 28 Q16 16 28 28" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5"/></svg>', x: '2%', y: '92%', size: '3rem', cls: '', rot: '0deg', opacity: 0.06, anim: 2, delay: -1, dur: 16 },
+      // Right side doodles
+      { content: 'ΔQ=ΔU+W', x: 'right:5%', y: '6%', size: '1.8rem', cls: 'formula', rot: '7deg', opacity: 0.09, anim: 1, delay: -2, dur: 15 },
+      { content: '<svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="2" rx="1"/><circle cx="7" cy="12" r="1.5"/><circle cx="17" cy="12" r="1.5"/><path d="M7 8 Q12 4 17 8" fill="none"/></svg>', x: 'right:8%', y: '20%', size: '4rem', cls: 'accent', rot: '-6deg', opacity: 0.12, anim: 2, delay: -5, dur: 18 },
+      { content: 'ε₀', x: 'right:3%', y: '33%', size: '3rem', cls: 'formula accent', rot: '10deg', opacity: 0.10, anim: 3, delay: -8, dur: 16 },
+      { content: '<svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 015 5c0 4-5 7-5 11M12 18a5 5 0 01-5-5c0-4 5-7 5-11"/><circle cx="12" cy="21" r="1"/></svg>', x: 'right:10%', y: '44%', size: '3.5rem', cls: '', rot: '0deg', opacity: 0.08, anim: 1, delay: -3, dur: 14 },
+      { content: 'Ω', x: 'right:6%', y: '55%', size: '4rem', cls: 'formula', rot: '-12deg', opacity: 0.09, anim: 2, delay: -6, dur: 17 },
+      { content: '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>', x: 'right:4%', y: '67%', size: '3rem', cls: 'accent', rot: '8deg', opacity: 0.10, anim: 3, delay: -1, dur: 19 },
+      { content: 'λ=h/p', x: 'right:11%', y: '78%', size: '1.6rem', cls: 'formula', rot: '-4deg', opacity: 0.07, anim: 1, delay: -9, dur: 13 },
+      { content: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>', x: 'right:7%', y: '88%', size: '3.2rem', cls: '', rot: '14deg', opacity: 0.08, anim: 2, delay: -4, dur: 15 },
+      { content: 'μ₀', x: 'right:13%', y: '94%', size: '2.2rem', cls: 'formula accent', rot: '-3deg', opacity: 0.06, anim: 1, delay: -7, dur: 16 },
+    ],
+    math: [
+      // Left side doodles
+      { content: '∫', x: '6%', y: '7%', size: '5rem', cls: 'formula accent', rot: '-5deg', opacity: 0.14, anim: 1, delay: 0, dur: 16 },
+      { content: 'dy/dx', x: '4%', y: '20%', size: '2rem', cls: 'formula', rot: '10deg', opacity: 0.09, anim: 2, delay: -3, dur: 18 },
+      { content: '<svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/><path d="M4 20 Q8 16 12 12 Q16 8 20 4" fill="none"/></svg>', x: '10%', y: '33%', size: '3.5rem', cls: 'accent', rot: '0deg', opacity: 0.11, anim: 3, delay: -6, dur: 17 },
+      { content: 'π', x: '3%', y: '42%', size: '4rem', cls: 'formula', rot: '8deg', opacity: 0.10, anim: 1, delay: -4, dur: 15 },
+      { content: 'Σ', x: '12%', y: '55%', size: '3.5rem', cls: 'formula accent', rot: '-12deg', opacity: 0.12, anim: 2, delay: -8, dur: 19 },
+      { content: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18" opacity="0.4"/><path d="M12 3a9 9 0 010 18" fill="none"/></svg>', x: '5%', y: '68%', size: '3rem', cls: '', rot: '5deg', opacity: 0.08, anim: 1, delay: -2, dur: 14 },
+      { content: 'ⁿCᵣ', x: '9%', y: '78%', size: '2.2rem', cls: 'formula', rot: '15deg', opacity: 0.07, anim: 3, delay: -5, dur: 16 },
+      { content: '∞', x: '4%', y: '88%', size: '3.8rem', cls: 'formula accent', rot: '0deg', opacity: 0.10, anim: 2, delay: -7, dur: 18 },
+      { content: 'sin θ', x: '13%', y: '12%', size: '1.8rem', cls: 'formula', rot: '-7deg', opacity: 0.07, anim: 1, delay: -1, dur: 13 },
+      // Right side doodles
+      { content: 'ƒ(x)', x: 'right:5%', y: '6%', size: '2.5rem', cls: 'formula', rot: '6deg', opacity: 0.10, anim: 1, delay: -2, dur: 15 },
+      { content: '<svg viewBox="0 0 24 24"><path d="M3 20 Q7 10 12 12 Q17 14 21 4" fill="none"/><circle cx="3" cy="20" r="1.5"/><circle cx="21" cy="4" r="1.5"/></svg>', x: 'right:8%', y: '18%', size: '4rem', cls: 'accent', rot: '-4deg', opacity: 0.12, anim: 2, delay: -5, dur: 18 },
+      { content: 'Δ', x: 'right:3%', y: '30%', size: '4.5rem', cls: 'formula', rot: '0deg', opacity: 0.09, anim: 3, delay: -8, dur: 16 },
+      { content: 'lim', x: 'right:10%', y: '42%', size: '2rem', cls: 'formula accent', rot: '12deg', opacity: 0.08, anim: 1, delay: -3, dur: 14 },
+      { content: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1" fill="none"/><rect x="13" y="4" width="7" height="7" rx="1" fill="none"/><rect x="4" y="13" width="7" height="7" rx="1" fill="none"/><rect x="13" y="13" width="7" height="7" rx="1" fill="none"/></svg>', x: 'right:6%', y: '54%', size: '3rem', cls: '', rot: '8deg', opacity: 0.09, anim: 2, delay: -6, dur: 17 },
+      { content: '∂/∂x', x: 'right:4%', y: '65%', size: '1.8rem', cls: 'formula', rot: '-10deg', opacity: 0.07, anim: 1, delay: -1, dur: 13 },
+      { content: '<svg viewBox="0 0 24 24"><path d="M2 20 C6 20 6 4 12 4 S18 20 22 20" fill="none"/></svg>', x: 'right:9%', y: '76%', size: '3.5rem', cls: 'accent', rot: '3deg', opacity: 0.10, anim: 3, delay: -4, dur: 19 },
+      { content: 'P(A∩B)', x: 'right:7%', y: '86%', size: '1.6rem', cls: 'formula', rot: '-6deg', opacity: 0.07, anim: 2, delay: -9, dur: 15 },
+      { content: '√', x: 'right:12%', y: '94%', size: '3rem', cls: 'formula', rot: '10deg', opacity: 0.06, anim: 1, delay: -7, dur: 16 },
+    ]
+  };
+
   function updateBackgroundElements() {
     const bgLayer = document.getElementById("desktopBg");
     if (!bgLayer) return;
     
-    const icons = {
-      physics: [
-        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(45 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-45 12 12)"/></svg>`,
-        `E=mc²`,
-        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 11V7a8 8 0 0116 0v4M4 11h4v7H4zM16 11h4v7h-4z"/></svg>`,
-        `F=ma`,
-        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 12c3.33-6 6.67-6 10 0 3.33 6 6.67 6 10 0"/></svg>`,
-        `λ`
-      ],
-      math: [
-        `∫`,
-        `π`,
-        `∑`,
-        `∞`,
-        `Δ`,
-        `ƒ(x)`
-      ]
-    };
-
-    const activeIcons = icons[activeSubject];
-    bgLayer.innerHTML = activeIcons.map((content, i) => `<div class="bg-icon icon-${i+1}">${content}</div>`).join('');
+    const animations = ['doodleFloat1', 'doodleFloat2', 'doodleFloat3'];
+    const doodles = DOODLE_ELEMENTS[activeSubject] || [];
+    
+    bgLayer.classList.remove('ready');
+    
+    bgLayer.innerHTML = doodles.map(d => {
+      const isRight = d.x.startsWith('right:');
+      const posX = isRight ? `right: ${d.x.replace('right:', '')}` : `left: ${d.x}`;
+      const animName = animations[(d.anim || 1) - 1];
+      
+      return `<div class="bg-doodle ${d.cls || ''}" style="
+        ${posX}; top: ${d.y}; font-size: ${d.size};
+        --rot: ${d.rot || '0deg'};
+        --doodle-opacity: ${d.opacity || 0.1};
+        animation-name: ${animName};
+        animation-duration: ${d.dur || 16}s;
+        animation-delay: ${d.delay || 0}s;
+      ">${d.content}</div>`;
+    }).join('');
+    
+    // Trigger fade-in
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        bgLayer.classList.add('ready');
+      });
+    });
   }
 
   function renderSkeletons() {
